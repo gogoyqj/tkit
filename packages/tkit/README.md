@@ -17,13 +17,13 @@ menu: '开发/测试/构建'
 
 ```shell
 # 创建组件 feature/components/componentName
-./node_modules/.bin/kit add component feature//componentName
+./node_modules/.bin/tkit-kit add component feature//componentName
 
 # 创建组件 feature/h5Components/componentName
-./node_modules/.bin/kit add component feature/h5/componentName
+./node_modules/.bin/tkit-kit add component feature/h5/componentName
 
 # 创建组件 feature/componentName
-./node_modules/.bin/kit add component feature/componentName
+./node_modules/.bin/tkit-kit add component feature/componentName
 
 -c : connect redux store
 -u : 路由页面，存在 this.props.match.params，组件名请使用 XXXPage
@@ -38,13 +38,13 @@ menu: '开发/测试/构建'
 
 ```shell
 # 创建组件 feature/components/componentName
-./node_modules/.bin/kit add presenter feature//componentName
+./node_modules/.bin/tkit-kit add presenter feature//componentName
 
 # 创建组件 feature/h5Components/componentName
-./node_modules/.bin/kit add presenter feature/h5/componentName
+./node_modules/.bin/tkit-kit add presenter feature/h5/componentName
 
 # 创建组件 feature/componentName
-./node_modules/.bin/kit add presenter feature/presenterName
+./node_modules/.bin/tkit-kit add presenter feature/presenterName
 
 -c : connect redux store
 -u : 路由页面，存在 props.match.params，组件名请使用 XXXPage
@@ -60,7 +60,7 @@ menu: '开发/测试/构建'
 命名遵循驼峰格式: xxModel
 
 ```
-  ./node_modules/.bin/kit add model feature/myModel
+  ./node_modules/.bin/tkit-kit add model feature/myModel
 ```
 
 _TIPS_
@@ -157,7 +157,7 @@ const MySFCComponent = () => {
 实际生成: doLogin, loginReducer
 
 ```shell
-  ./node_modules/.bin/kit add action feature/actionName
+  ./node_modules/.bin/tkit-kit add action feature/actionName
 ```
 
 3. #### 创建异步 action - model instead
@@ -167,7 +167,7 @@ const MySFCComponent = () => {
 实际生成 action: doLogin, loginReducer, sagaLogin
 
 ```shell
-  ./node_modules/.bin/kit add action feature/sagaName -a
+  ./node_modules/.bin/tkit-kit add action feature/sagaName -a
 ```
 
 4. #### 创建适配 antd 分页 list action
@@ -176,7 +176,7 @@ const MySFCComponent = () => {
 
 ```shell
   # 命令请使用 myList 结构
-  ./node_modules/.bin/kit add list feature/myList
+  ./node_modules/.bin/tkit-kit add list feature/myList
 ```
 
 对应 store、actions
