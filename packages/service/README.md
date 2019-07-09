@@ -5,7 +5,7 @@ menu: 'ajax'
 
 # `npm i -D tkit-service`
 
-> 根据 swagger 或者 yapi mock json 生成 typescript service 代码，以取代 sm2tsservice - 将 `sm2tsservice` 替换为 `service`
+> 根据 swagger 或者 yapi mock json 生成 typescript service 代码，以取代 sm2tsservice - 将 `sm2tsservice` 替换为 `tkit-service`
 
 ## config
 
