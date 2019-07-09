@@ -1,0 +1,21 @@
+import {
+  <%= constsName %>,
+  <%= actionName %>,
+  <%= reducerName %>
+} from '@src/features/<%= feature %>/redux/<%= fileName %>';
+
+
+describe('<%= feature %>/redux/<%= fileName %>', () => {
+  it('returns correct action by <%= actionName %>', () => {
+    expect(<%= actionName %>()).toHaveProperty('type', <%= constsName %>);
+  });
+
+  it('handles action type <%= actionName %> correctly', () => {
+    const prevState = {};
+    const state = <%= reducerName %>(
+      prevState,
+      { type: <%= constsName %> }
+    );
+    expect(state === prevState).toBeFalsy();
+  });
+});

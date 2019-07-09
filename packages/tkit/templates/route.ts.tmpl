@@ -1,0 +1,15 @@
+<% if (async) { %>
+const loader = (name: string) => async () => {
+  const entrance = await import(/* webpackChunkName: "f.<%= feature %>" */ './');
+  return entrance[name];
+};
+<% } %>
+import { IRoute } from '@src/types';
+
+export const childRoutes:IRoute[] = [
+];
+export default {
+  path: '<%= feature %>',
+  name: '<%= feature %>',
+  childRoutes
+};

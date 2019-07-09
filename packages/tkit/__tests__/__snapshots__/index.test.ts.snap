@@ -1,0 +1,478 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tkit-core shoul add Action/no-init works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/features/admin/redux/actions.ts": Object {
+        "moduleSpecifier": "./userInfo",
+        "namedImports": "doUserInfo",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "doUserInfo",
+                "name": "actions",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/initialState.ts": Object {
+        "moduleSpecifier": "./userInfo",
+        "namedImports": "pureUserInfoState",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "...pureUserInfoState",
+                "name": "initialState",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/reducer.ts": Object {
+        "moduleSpecifier": "./userInfo",
+        "namedImports": "applyUserInfo",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "applyUserInfo",
+                "name": "reducers",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core shoul add Action/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/redux/userInfo.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/redux/userInfo.test.ts",
+  ],
+]
+`;
+
+exports[`tkit-core shoul add List/no-init works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/features/admin/redux/actions.ts": Object {
+        "moduleSpecifier": "./userList",
+        "namedImports": "doUserList, doSelectUserList",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "doUserList",
+                "name": "actions",
+              },
+              Object {
+                "initializer": "doSelectUserList",
+                "name": "actions",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/initialState.ts": Object {
+        "moduleSpecifier": "./userList",
+        "namedImports": "pureUserListState",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "...pureUserListState",
+                "name": "initialState",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/reducer.ts": Object {
+        "moduleSpecifier": "./userList",
+        "namedImports": "applyUserList",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "applyUserList",
+                "name": "reducers",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core shoul add List/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/redux/userList.ts",
+  ],
+  Array [
+    "/src/features/admin/redux/sagas.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/redux/userList.test.ts",
+  ],
+  Array [
+    "/src/features/admin/redux/sagas.ts",
+  ],
+]
+`;
+
+exports[`tkit-core shoul add Model/no-init works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/features/admin/redux/actions.ts": Object {
+        "moduleSpecifier": "./userModel",
+        "namedImports": "default as doUserModel",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "...doUserModel.actions",
+                "name": "actions",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/initialState.ts": Object {
+        "moduleSpecifier": "./userModel",
+        "namedImports": "userModelState",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "...userModelState",
+                "name": "initialState",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/reducer.ts": Object {
+        "moduleSpecifier": "./userModel",
+        "namedImports": "default as doUserModel",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "doUserModel.reducers",
+                "name": "reducers",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/features/admin/redux/sagas.ts": Object {
+        "moduleSpecifier": "./userModel",
+        "namedImports": "default as doUserModel",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "doUserModel.sagas",
+                "name": "sagaUserModel",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core shoul add Model/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/redux/userModel.ts",
+  ],
+]
+`;
+
+exports[`tkit-core shoul add Selector/no-init works ok 1`] = `Array []`;
+
+exports[`tkit-core shoul add Selector/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/selectors/selectUser.ts",
+  ],
+  Array [
+    "/src/features/admin/selectors/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/selectors/selectUser.test.ts",
+  ],
+  Array [
+    "/src/features/admin/selectors/index.ts",
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/directory/no-init works ok 1`] = `Array []`;
+
+exports[`tkit-core should add Component/directory/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/directoryComponents/Home.tsx",
+  ],
+  Array [
+    "/src/features/admin/directoryComponents/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/directoryComponents/Home.test.tsx",
+  ],
+  Array [
+    "/src/features/admin/directoryComponents/index.ts",
+  ],
+  Array [
+    "/src/features/admin/directoryComponents/Home.less",
+  ],
+  Array [
+    "/src/features/admin/directoryComponents/index.ts",
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/init works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/common/rootReducer.ts": Object {
+        "defaultImport": "adminReducer",
+        "moduleSpecifier": "@features/admin/redux/reducer",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "admin: adminReducer",
+                "name": "reducerMap",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/common/rootSaga.ts": Object {
+        "defaultImport": "* as adminSaga",
+        "moduleSpecifier": "@features/admin/redux/sagas",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "adminSaga",
+                "name": "featureSagas",
+              },
+            ],
+          },
+        ],
+      },
+      "/src/common/routeConfig.ts": Object {
+        "defaultImport": "adminRoute",
+        "moduleSpecifier": "@features/admin/route",
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "adminRoute",
+                "name": "childRoutes",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/route.ts",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/src/features/admin/Home.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/Home.test.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/src/features/admin/Home.less",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/no-init/url works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/features/admin/route.ts": Object {
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "{
+    load: loader('HomePage'),
+    path: 'home'
+  }",
+                "name": "childRoutes",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/no-init/url works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/HomePage/HomePage.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/HomePage.test.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/src/features/admin/HomePage/HomePage.less",
+  ],
+  Array [
+    "/src/features/admin/HomePage/index.ts",
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/no-init/wrap works ok 1`] = `
+Array [
+  Array [
+    Object {
+      "/src/features/admin/route.ts": Object {
+        "vars": Array [
+          Object {
+            "declarationKind": "const",
+            "declarations": Array [
+              Object {
+                "initializer": "{
+    load: loader('HomePage'),
+    path: 'home'
+  }",
+                "name": "childRoutes",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    undefined,
+    undefined,
+  ],
+]
+`;
+
+exports[`tkit-core should add Component/no-init/wrap works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/HomePage/HomePage.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/HomePage.test.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/src/features/admin/HomePage/HomePage.less",
+  ],
+  Array [
+    "/src/features/admin/HomePage/index.ts",
+  ],
+]
+`;
+
+exports[`tkit-core should add Presenter/no-init works ok 1`] = `Array []`;
+
+exports[`tkit-core should add Presenter/no-init works ok 2`] = `
+Array [
+  Array [
+    "/src/features/admin/SFCHome.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/__tests__/features/admin/SFCHome.test.tsx",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+  Array [
+    "/src/features/admin/SFCHome.less",
+  ],
+  Array [
+    "/src/features/admin/index.ts",
+  ],
+]
+`;

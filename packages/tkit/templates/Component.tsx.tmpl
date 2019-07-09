@@ -1,0 +1,63 @@
+import React from 'react';<% if (connect) { %>
+import { bindActionCreators, Dispatch } from 'tkit-actions';
+import { connect } from 'react-redux';<% } %><% if (url) {%>
+import { RouteComponentProps } from 'react-router-dom';
+<%} %>
+<% if (connect) { %>
+import { IRootState } from '@src/types';
+
+import actions from '<%= components || wrap ? '' : './' %><%= components ? '../' : '' %><%= wrap ? '../' : '' %>redux/actions';
+<% } %>
+
+import './<%= fileName %>.less';
+
+<% if (event) { %>
+import EventWrapper, { IEventWrapperProps } from 'tkit-event';
+<% } %>
+
+// own props
+export interface I<%= componentName %>Props {}
+// own state
+export interface I<%= componentName %>State {}  
+
+<% if (connect) { %>
+
+type StateProps  = ReturnType<typeof mapStateToProps>;
+type DispatchProps  = ReturnType<typeof mapDispatchToProps>;
+<% } %>
+
+type Props = <%= url ? `RouteComponentProps<{}> & ` : '' %><%= connect ? 'StateProps & DispatchProps & ' : '' %><%= event ? 'IEventWrapperProps & ' : '' %>I<%= componentName %>Props;
+
+<% if (connect) {%>
+export class <%= componentName %> extends React.<%= pure ? 'PureComponent' : 'Component' %><Props, <%= 'I' + componentName + 'State' %>> {
+<% } else { %>
+export default class <%= componentName %> extends React.<%= pure ? 'PureComponent' : 'Component' %><Props, <%= 'I' + componentName + 'State' %>> {
+<% } %>
+  // public state: I<%= componentName %>State = {};
+  // public constructor(props: Props) {
+  //   super(props);
+  //   this.state = {};
+  // }
+  //
+  public render() {
+    return (
+      <div className="<%= cssClassName%>">hello</div>
+    );
+  }
+}
+<% if (connect) { %>
+
+/* istanbul ignore next */
+function mapStateToProps(state: IRootState/*, ownProps: I<%= componentName %>Props*/) {
+  return {};
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch: Dispatch/*, ownProps: I<%= componentName %>Props*/) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+}
+
+export default connect<StateProps, DispatchProps, I<%= componentName %>Props>(mapStateToProps, mapDispatchToProps)(<%= event ? 'EventWrapper(' : '' %><%= componentName %><%= event ? ')' : '' %>);
+<% } %>

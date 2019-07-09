@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`actions work ok check sample/actionsFail.ts work ok 1`] = `
+Array [
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "actionsSamples/actionsFail.ts",
+    "messageText": "Type '(username: number) => { payload: { username: number; }; error?: boolean; type: string; }' is not assignable to type '(username: string) => { type: string; payload: { username: string; }; }'.
+  Types of parameters 'username' and 'username' are incompatible.
+    Type 'string' is not assignable to type 'number'.",
+  },
+]
+`;
+
+exports[`actions work ok check sample/actionsOK.ts work ok 1`] = `Array []`;

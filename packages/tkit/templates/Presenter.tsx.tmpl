@@ -1,0 +1,52 @@
+import React<% if (hooks) { %>, { useState, useEffect }<%} %> from 'react';<% if (connect) { %>
+import { bindActionCreators, Dispatch } from 'tkit-actions';
+import { connect } from 'react-redux';<% } %><% if (url) {%>
+import { RouteComponentProps } from 'react-router-dom';
+<%} %>
+import './<%= fileName %>.less';
+<% if (connect) { %>
+
+import { IRootState } from '@src/types';
+
+import actions from '<%= components || wrap ? '' : './' %><%= components ? '../' : '' %><%= wrap ? '../' : '' %>redux/actions';
+
+type StateProps  = ReturnType<typeof mapStateToProps>;
+type DispatchProps  = ReturnType<typeof mapDispatchToProps>;
+<% } %>
+<% if (event) { %>
+import EventWrapper, { IEventWrapperProps } from 'tkit-event';
+<% } %>
+
+export interface I<%= presenterName %>Props {}
+type Props = <%= url ? `RouteComponentProps<any> & ` : '' %><%= connect ? 'StateProps & DispatchProps & ' : '' %><%= event ? 'IEventWrapperProps & ' : '' %>I<%= presenterName %>Props;
+
+export function <%= presenterName %> (props: Props) {
+  <% if (hooks) { %>
+    const [state, changeState] = useState(0);
+    // run on each update
+    useEffect(() => {
+      // @return clean up function
+      // return () => { };
+    }, [])
+  <%} %> 
+  return (
+    <div className="common-presenter <%= cssClassName%>">hello</div>
+  );
+};
+<% if (connect) { %>
+/* istanbul ignore next */
+function mapStateToProps(state: IRootState/*, ownProps: I<%= presenterName %>Props*/) {
+  return {};
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch: Dispatch/*, ownProps: I<%= presenterName %>Props*/) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+}
+
+export default connect<StateProps, DispatchProps, I<%= presenterName %>Props>(mapStateToProps, mapDispatchToProps)(<%= event ? 'EventWrapper(' : '' %><%= presenterName %><%= event ? ')' : '' %>);
+<% } else { %>
+export default <%= event ? 'EventWrapper(' : '' %><%= presenterName %><%= event ? ')' : '' %>;
+<% } %>

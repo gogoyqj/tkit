@@ -1,0 +1,8 @@
+import { createSelector } from 'reselect';
+
+const dataSelector = (state: any) => state.data;
+
+export const <%= selectorName %> = createSelector(
+  dataSelector,
+  data => data
+);

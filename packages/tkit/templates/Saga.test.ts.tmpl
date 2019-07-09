@@ -1,0 +1,32 @@
+import { delay } from 'redux-saga';
+import { call, put } from 'redux-saga/effects';
+
+import {
+  <%= constsName %>,
+  <%= constsName %>_SUCCESS,
+  fetchData,
+  <%= actionName %>,
+  <%= sagaName %>,
+  <%= reducerName %>
+} from '@src/features/<%= feature %>/redux/<%= fileName %>';
+
+
+describe('<%= feature %>/redux/<%= actionName %>', () => {
+  it('correct action by <%= actionName %>', () => {
+    expect(<%= actionName %>()).toHaveProperty('type', <%= constsName %>);
+  });
+
+  it('calls delay when receives a begin action', () => {
+    const generator = fetchData();
+    expect(generator.next().value).toMatchObject(call(delay, 20));
+  });
+
+  it('handles action type <%= actionName %> correctly', () => {
+    const prevState = {};
+    const state = <%= reducerName %>(
+      prevState,
+      { type: <%= constsName %>_SUCCESS }
+    );
+    expect(state === prevState).toBeFalsy();
+  });
+});

@@ -1,0 +1,45 @@
+// namespace
+.recruit-admin-header {
+  // B
+  .userinfo {
+    // B__E
+    &__avatar {
+      // 位置
+      float: left;
+      // 大小
+      width: 100px;
+      height: 100px;
+      border: 1px solid transparent;
+      // 文字
+      line-height: 100%;
+      // 背景
+      background: transparent;
+      // x
+      transform: rotate(90deg);
+      // B__E--M
+      &--hidden {
+        display: none;
+      }
+    }
+    // B--M
+    &--active {
+      // B__E
+      &__avatar {
+        // B__E--M
+        &--hover {
+          border: 1px solid red;
+        }
+      }
+    }
+    // B--M
+    &--diabled {
+      // B__E
+      &__avatar {
+        // B__E--M
+        &--hover {
+          border: 1px solid #ccc;
+        }
+      }
+    }
+  }
+}

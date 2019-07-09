@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils/pagination work ok check sample/testPaginationFail.ts work ok 1`] = `
+Array [
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'boolean'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2551,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Property 'userList2' does not exist on type 'Store'. Did you mean 'userList'?",
+  },
+  Object {
+    "category": 1,
+    "code": 2339,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Property 'total2' does not exist on type 'TkitPagenationStateBase<{ id: number; name: string; }, MergedParams>'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'true' is not assignable to type 'string | number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2339,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Property 'userList2' does not exist on type 'Store'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "paginationSamples/testPaginationFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+]
+`;
+
+exports[`utils/pagination work ok check sample/testPaginationOK.ts work ok 1`] = `Array []`;

@@ -1,0 +1,20 @@
+import { pagination } from 'tkit-pagination';
+import { api } from '@services';
+
+const {
+  START,
+  SUCCESS,
+  initialState,
+  reducer,
+  action,
+  selectAction,
+  saga
+} = pagination('<%= name %>', { pageSize: 20 }, api.api.<%= name %>, 'id', '<%= feature %>');
+
+export const <%= pureStateName %> = initialState;
+export const <%= selectActionName %> = selectAction;
+export const <%= actionName %> = action;
+export const <%= reducerName %>  = reducer;
+export const <%= sagaName %> = saga;
+export const <%= constsName %> = START;
+export const <%= constsName %>_SUCCESS = SUCCESS;

@@ -1,0 +1,25 @@
+import {
+  <%= constsName %>,
+  <%= constsName %>_SUCCESS,
+  <%= actionName %>,
+  <%= pureStateName %>,
+  <%= reducerName %>
+} from '@src/features/<%= feature %>/redux/<%= fileName %>';
+
+describe('jobs/redux/doList', () => {
+  it('correct action by doList', () => {
+    expect(<%= actionName %>({ s: '2' })).toHaveProperty('type', <%= constsName %>);
+  });
+
+  it('handles action type doList correctly', () => {
+    expect(<%= pureStateName %>).toHaveProperty('<%= name %>');
+    const prevState = {
+      ...<%= pureStateName %>
+    };
+    const state = <%= reducerName %>(
+      prevState,
+      { type: <%= constsName %>_SUCCESS, payload: { } }
+    );
+    expect(state === prevState).toBeFalsy();
+  });
+});

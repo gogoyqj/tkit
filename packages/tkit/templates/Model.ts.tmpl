@@ -1,0 +1,67 @@
+<% if (local) { %>/**
+ * @description 局部Model ${camelName} 供 useModel 使用
+ */
+import { Tction, M } from 'tkit-model';
+import { api } from '@services';
+
+const Model = M({
+  state: {},
+  namespace: '${camelName}',
+  reducers: {
+    doSomething: (state, action: Tction<{}>) => {
+      return {
+        ...state
+      };
+    }
+  },
+  effects: {
+    doSomethingAsyc: async ({ tPut }) => {
+      const res = await api.xxx();
+      tPut(Model.actions.doSomething, {});
+    }
+  }
+});
+
+export default Model;
+
+<% } else {%>/**
+ * @description 全局Model ${camelName} 挂载到 redux 上
+ */
+import createModel, { Tction } from 'tkit-model';
+import { api } from '@services';
+
+export interface State {
+  ${camelName}: {}
+}
+
+export const ${camelName}State: State = {
+  ${camelName}: {}
+}
+
+const model = createModel({
+  state: ${camelName}State,
+  namespace: '${camelName}',
+  reducers: {
+    // @params.0 state
+    // @params.0 action
+    // doSomething: (state, action: Tction<{ username: string }>) => {
+    //   return {
+    //     ...state,
+    //     username: action.payload.username
+    //   };
+    // }
+  },
+  effects: {
+    // @params.0 sagaEffect
+    // @params.0 action
+    // *doSomethingAsync({ namespace, put, tPut, tCall }, action: Tction<{ username: string }>): Iterator<{}> {
+    //   yield put({ type: `$\{namespace}/doLogin`, payload: { username: '' } });
+    //   const data: Utils.GetROA<api.getTest> = yield tCall(api.getTest, 2);
+    //   yield tPut(model.actions.doLogin, { username: '' });
+    // }
+  }
+});
+
+export default model;
+
+<%}%>

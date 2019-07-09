@@ -1,0 +1,29 @@
+{
+  "name": "tkit-commitlint-config-tkit",
+  "version": "3.0.1",
+  "description": "> TODO: description",
+  "author": "yangqianjun <751558483@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "index.js",
+  "directories": {},
+  "files": [
+    "index.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {},
+  "peerDependencies": {
+    "commitlint": "^8.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "commitlint": "^8.0.0",
+    "tkit-typescript-config": "file:../typescript-config"
+  }
+}

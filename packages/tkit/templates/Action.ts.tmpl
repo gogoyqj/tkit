@@ -1,0 +1,25 @@
+import { createAction, handleActions } from 'tkit-actions';
+
+import { IInitialState } from './initialState';
+
+export const <%= constsName %> = '<%= feature %>/<%= constsName %>';
+
+export const <%= actionName %> = () => createAction(<%= constsName %>);
+export type <%= actionName %>ActionType = ReturnType<typeof <%= actionName %>>;
+
+export interface I<%= pascalName %>State {
+  // use Readonly
+  // <%= actionName %>: Readonly<{}>
+}
+
+export const <%= pureStateName %>: I<%= pascalName %>State = {
+};
+
+export const <%= reducerName %> = handleActions(
+  {
+    [<%= constsName %>]: (state: IInitialState, action: <%= actionName %>ActionType): IInitialState => {
+      return { ...state };
+    }
+  },
+  <%= pureStateName %>
+);

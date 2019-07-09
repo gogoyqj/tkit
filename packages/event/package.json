@@ -1,0 +1,36 @@
+{
+  "name": "tkit-event",
+  "version": "3.0.0",
+  "description": "> TODO: description",
+  "author": "yangqianjun <751558483@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "test": "jest --all --env=jsdom",
+    "build": "tsc --project tsconfig.prod.json"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.3",
+    "react-dom": ">=16.8.3"
+  },
+  "dependencies": {
+    "eventemitter3": "^4.0.0",
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "tkit-jest-config": "file:../jest-config",
+    "tkit-typescript-config": "file:../typescript-config"
+  }
+}

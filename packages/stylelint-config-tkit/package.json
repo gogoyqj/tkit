@@ -1,0 +1,32 @@
+{
+  "name": "tkit-stylelint-config-tkit",
+  "version": "3.0.0",
+  "description": "> TODO: description",
+  "author": "yangqianjun <751558483@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "index.js",
+  "directories": {},
+  "files": [
+    "index.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {},
+  "peerDependencies": {
+    "stylelint": "^10.1.0",
+    "stylelint-config-recommended": "^2.2.0"
+  },
+  "dependencies": {
+    "stylelint": "^10.1.0",
+    "stylelint-config-recommended": "^2.2.0"
+  },
+  "devDependencies": {
+    "tkit-typescript-config": "file:../typescript-config"
+  }
+}

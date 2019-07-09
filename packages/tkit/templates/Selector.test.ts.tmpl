@@ -1,0 +1,8 @@
+import { <%= selectorName %> } from '@src/features/<%= feature %>/selectors/<%= fileName %>';
+
+describe('<%= feature %>/selectors/<%= selectorName %>', () => {
+  it('returns correct value', () => {
+    const expectedResult = 'data';
+    expect(<%= selectorName %>({ data: 'data' })).toEqual(expectedResult);
+  });
+});

@@ -1,0 +1,10 @@
+import React from 'react';
+import { shallow } from 'enzyme';
+import { <%= presenterName %> } from '@src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
+
+describe('<%= feature %>/<%= fileName %>', () => {
+  it('renders node with correct class name', () => {<% if (connect || url) {%>
+    // @ts-ignore // if <%= presenterName %> is connect<% } %>
+    const renderedComponent = shallow(<<%= presenterName %> />);
+  });
+});

@@ -1,0 +1,30 @@
+{
+  "name": "tkit-pagination",
+  "version": "3.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest --all",
+    "build": "tsc --project tsconfig.prod.json"
+  },
+  "author": "",
+  "license": "MIT",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "tkit-actions": "file:../actions",
+    "tkit-ajax": "file:../ajax",
+    "redux-actions": "^2.6.4",
+    "redux-saga": "0.16.2",
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "tkit-types": "file:../types",
+    "tkit-typescript-config": "file:../typescript-config"
+  }
+}

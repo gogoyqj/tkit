@@ -1,0 +1,12 @@
+{
+  "extends": "tkit-typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib",
+    "rootDir": "src",
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types", "src/**/*.d.ts", "*.d.ts"],
+    "paths": {
+      "@src/*": ["src/*"]
+    }
+  }
+}
