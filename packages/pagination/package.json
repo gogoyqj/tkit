@@ -26,5 +26,9 @@
   "devDependencies": {
     "tkit-types": "file:../types",
     "tkit-typescript-config": "file:../typescript-config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gogoyqj/tkit"
   }
 }

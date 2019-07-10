@@ -28,5 +28,9 @@
     "tkit-jest-config": "file:../jest-config",
     "tkit-types": "file:../types",
     "tkit-typescript-config": "file:../typescript-config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gogoyqj/tkit"
   }
 }

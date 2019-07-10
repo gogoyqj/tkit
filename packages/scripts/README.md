@@ -25,6 +25,10 @@ menu: '开发/测试/构建'
 }
 ```
 
+### 模板变量 - index.html
+
+> 所有 `REACT_APP_` 或者 `WEBPACK_` 开头的变量以及 PUBLIC_URL 都会通过 `htmlWebpackPlugin.options` 暴露
+
 ### 代理设置
 
 > .env.development 或者 .env.development.local

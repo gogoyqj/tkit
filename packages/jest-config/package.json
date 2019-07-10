@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/gogoyqj/tkit"
   },
   "scripts": {
     "build": "tsc --project tsconfig.prod.json"

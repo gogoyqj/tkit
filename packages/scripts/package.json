@@ -1,6 +1,6 @@
 {
   "name": "tkit-scripts",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "> TODO: description",
   "author": "\"yangqianjun\" <\"751558483@qq.com\">",
   "homepage": "",
@@ -74,5 +74,9 @@
   },
   "devDependencies": {
     "tkit-typescript-config": "file:../typescript-config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gogoyqj/tkit"
   }
 }
