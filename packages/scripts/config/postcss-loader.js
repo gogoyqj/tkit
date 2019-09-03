@@ -9,7 +9,7 @@ module.exports = {
       require('postcss-flexbugs-fixes'),
       autoprefixer({
         flexbox: 'no-2009',
-        browsers: [
+        overrideBrowserslist: [
           '>1%',
           'last 4 versions',
           'Firefox ESR',

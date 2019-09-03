@@ -1,15 +1,20 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { JSONSchema4, JSONSchema6 } from 'json-schema';
+import { CoreOptions } from 'request';
 
 export type SMSchema = JSONSchema4 | JSONSchema6;
 
 export interface PathJson {
-  description: string;
+  description?: string;
+  operationId?: string;
+  tags?: string[];
+  summary?: string;
+  consumes?: string[];
   parameters: {
-    name: string;
-    in: 'path' | 'form' | 'query' | 'body' | string;
-    description: string;
-    required: boolean;
+    name?: string;
+    in?: 'path' | 'form' | 'query' | 'body' | string;
+    description?: string;
+    required?: boolean;
     type?: string;
     schema?: SMSchema;
     format?: any;
@@ -20,10 +25,17 @@ export interface PathJson {
       schema?: SMSchema;
     };
   };
+  [extra: string]: any;
 }
 
 export interface SwaggerJson {
   __mtime?: any;
+  swagger?: string;
+  info?: any;
+  tags?: {
+    name?: string;
+    description?: string;
+  }[];
   paths: {
     [path: string]: {
       [method: string]: PathJson;
@@ -31,6 +43,7 @@ export interface SwaggerJson {
   };
   definitions?: SMSchema;
   basePath: string;
+  [extra: string]: any;
 }
 
 export interface SMAjaxConfig {
@@ -67,3 +80,37 @@ export const X_SM_PATH = 'x-sm-path';
 export const X_SM_BASEPATH = 'x-sm-basepath';
 export const X_SM_PARAMS = 'x-sm-params';
 export const X_SM_ERROR = 'x-sm-error';
+
+export type SwaggerGuardMode = 'strict' | 'safe';
+
+export interface String2StringMap {
+  [key: string]: string;
+}
+
+export interface GuardConfig {
+  methodUrl2OperationIdMap?: String2StringMap;
+  mode?: SwaggerGuardMode;
+  prefixReg?: RegExp;
+  badParamsReg?: RegExp;
+}
+
+export interface Json2Service {
+  url?: string;
+  type?: 'yapi' | 'swagger';
+  yapiConfig?: {
+    required?: boolean;
+    bodyJsonRequired?: boolean;
+    categoryMap?: String2StringMap | ((cate: string) => string);
+  };
+  swaggerParser?: SwaggerParser;
+  validateResponse?: boolean;
+  guardConfig?: GuardConfig;
+  requestConfig?: { url?: string } & CoreOptions;
+}
+
+export interface SwaggerParser {
+  '-o'?: string;
+  '-t'?: string;
+  '-l'?: string;
+  '-i': string;
+}

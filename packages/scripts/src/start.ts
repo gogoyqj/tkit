@@ -20,19 +20,20 @@ import { modulePath } from './consts';
 
 checkNpmVersion();
 
-const argv = process.argv.slice(2);
-argvParser(argv, process.env);
-
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
 
+// Ensure environment variables are read.
+require('../config/env');
+
+// environment variables from cli have high priority
+const argv = process.argv.slice(2);
+argvParser(argv, process.env);
+
 process.on('unhandledRejection', err => {
   throw err;
 });
-
-// Ensure environment variables are read.
-require('../config/env');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const paths = require(ensureFile('config/paths', modulePath));

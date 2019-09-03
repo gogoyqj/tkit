@@ -11,27 +11,31 @@ const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeM
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const { ensureScriptsFile: ensureFile } = require('../lib/consts');
+const { ensureScriptsFile: ensureFile, getTHEME } = require('../lib/consts');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
 const publicPath = '/';
 const publicUrl = '';
 const env = getClientEnvironment(publicUrl);
-const THEME = process.env.THEME || process.env.WEBPACK_THEME;
+const THEME = getTHEME();
 const SITE = process.env.WEBPACK_ALIAS;
 const aliasFile = ensureFile(`config/${SITE}-alias.js`);
 const aliasConfig = fs.existsSync(aliasFile) ? require(aliasFile) : {};
+
+// eslint-disable-next-line no-console
+console.log(`dev with THEME: ${THEME || ''}, ALIAS: ${SITE}`);
 
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
   entry: {
-    en_US: paths.appENUS,
-    zh_CN: paths.appZHCN,
+    // en_US: paths.appENUS,
+    // zh_CN: paths.appZHCN,
     main: [
       ensureFile('config/polyfills'),
       require.resolve('react-dev-utils/webpackHotDevClient'),
+      paths.appZHCN, // 先打包到一起
       paths.appIndexJs
     ]
   },
@@ -62,6 +66,7 @@ module.exports = {
     ],
     alias: {
       'react-native': 'react-native-web',
+      ...require('./hack-webpack-alias'),
       ...(aliasConfig.alias || aliasConfig)
     },
     plugins: [
@@ -79,9 +84,7 @@ module.exports = {
           require(ensureFile('config/url-loader')),
           require(ensureFile('config/babel-loader')),
           require(ensureFile('config/tsx-loader'))(paths.appTsDevConfig),
-          THEME === 'yellow'
-            ? require(ensureFile('config/yellow-less-loader'))
-            : require(ensureFile('config/less-loader')),
+          require(ensureFile('config/less-loader')),
           {
             test: /\.css$/,
             use: [

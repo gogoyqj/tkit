@@ -60,12 +60,15 @@ export function createProject(config?: ProjectOptions) {
   });
 }
 
+let astHandlerCounter = 0;
+
 export async function astHandler(
   fileMapToInject: OperationFileMap,
   action: OperationType = 'add',
   config?: ProjectOptions
 ) {
-  console.time('parse');
+  const randomID = astHandlerCounter++;
+  console.time(`parse ${randomID}`);
   const isRemove = action === 'remove';
   const project = createProject(config);
   Object.keys(fileMapToInject).forEach(file => {
@@ -95,7 +98,7 @@ export async function astHandler(
     // hanleExport(root, config, isRemove);
   });
   await project.save();
-  console.timeEnd('parse');
+  console.timeEnd(`parse ${randomID}`);
 }
 
 export function handleVars(

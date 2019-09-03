@@ -71,11 +71,11 @@ const MySFCComponent = props => {
 > 创建全局 redux model
 
 ```ts
-import createModel, { Tction, tPut }  from 'tkit-model';
+import createModel, { Tction }  from 'tkit-model';
 import otherModel from './otherModel';
 
 const myModel = createModel({
-  effects: *doSomethingAsync({ namespace, put }, action: Tction<{ username: string }>) {
+  effects: *doSomethingAsync({ namespace, put, tPut }, action: Tction<{ username: string }>) {
     // 触发其他 model action
     // way 1, rec
     yield tPut(otherModel.actions.actionsNameA, { username: '' });

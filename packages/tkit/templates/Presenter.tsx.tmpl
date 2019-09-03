@@ -20,7 +20,7 @@ import EventWrapper, { IEventWrapperProps } from 'tkit-event';
 export interface I<%= presenterName %>Props {}
 type Props = <%= url ? `RouteComponentProps<any> & ` : '' %><%= connect ? 'StateProps & DispatchProps & ' : '' %><%= event ? 'IEventWrapperProps & ' : '' %>I<%= presenterName %>Props;
 
-export function <%= presenterName %> (props: Props) {
+export function <%= presenterName %> (props: Readonly<Props>) {
   <% if (hooks) { %>
     const [state, changeState] = useState(0);
     // run on each update

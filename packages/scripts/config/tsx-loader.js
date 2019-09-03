@@ -21,13 +21,13 @@ module.exports = function(configFile) {
             before: [
               tsImportPluginFactory({
                 libraryName: 'antd',
-                libraryDirectory: 'lib',
+                libraryDirectory: process.env.ANTD_LIB_DIR || 'lib',
                 style: true,
                 resolveContext: [path.join(process.cwd(), 'node_modules')]
               }),
               tsImportPluginFactory({
                 libraryName: 'antd-mobile',
-                libraryDirectory: 'lib',
+                libraryDirectory: process.env.ANTD_MOBILE_LIB_DIR || 'es',
                 style: true,
                 resolveContext: [path.join(process.cwd(), 'node_modules')]
               })

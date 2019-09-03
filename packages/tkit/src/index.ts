@@ -315,7 +315,9 @@ export const handle = (
         targetTestsDir = path.join(testsDir, components);
         indexFile = path.join(targetSourceDir, `index${h5}.ts`);
       }
-      fsX.ensureFileSync(indexFile);
+      if (h5) {
+        fsX.ensureFileSync(indexFile);
+      }
       // stateless component
       presenterName = fileName = `SFC${pascalName}${isPage ? 'Page' : ''}`;
       fileName = `${fileName}${h5}`;
@@ -331,7 +333,9 @@ export const handle = (
         targetTestsDir = path.join(testsDir, components);
         indexFile = path.join(targetSourceDir, `index${h5}.ts`);
       }
-      fsX.ensureFileSync(indexFile);
+      if (h5) {
+        fsX.ensureFileSync(indexFile);
+      }
       componentName = fileName = `${pascalName}${isPage ? 'Page' : ''}`;
       fileName = `${fileName}${h5}`;
       exportCode = {
@@ -436,7 +440,8 @@ export const handle = (
           const code = exportCode[fileToInject];
           if (
             code &&
-            fsX.readFileSync(fileToInject, { encoding: 'utf8' }).indexOf(code.trim()) === -1
+            (!fsX.existsSync(fileToInject) ||
+              fsX.readFileSync(fileToInject, { encoding: 'utf8' }).indexOf(code.trim()) === -1)
           ) {
             fsX.writeFileSync(fileToInject, code, { encoding: 'utf8', flag: 'a+' });
           }
@@ -449,8 +454,11 @@ export const handle = (
 
   // add Page into src/features/${feature}/route.ts
   if (isView && url) {
+    // ms route.ts 的操作可能会有 bug ??
     const routePath = path.join(targetSourceDir, `route${h5}.ts`);
-    fsX.ensureFileSync(routePath);
+    if (h5) {
+      fsX.ensureFileSync(routePath);
+    }
     astHandler({
       [routePath]: {
         vars: [

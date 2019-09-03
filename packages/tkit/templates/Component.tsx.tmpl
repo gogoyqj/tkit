@@ -33,8 +33,8 @@ export class <%= componentName %> extends React.<%= pure ? 'PureComponent' : 'Co
 <% } else { %>
 export default class <%= componentName %> extends React.<%= pure ? 'PureComponent' : 'Component' %><Props, <%= 'I' + componentName + 'State' %>> {
 <% } %>
-  // public state: I<%= componentName %>State = {};
-  // public constructor(props: Props) {
+  // public state: Readonly<I<%= componentName %>State> = {};
+  // public constructor(props: Readonly<Props>) {
   //   super(props);
   //   this.state = {};
   // }

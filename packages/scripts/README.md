@@ -37,6 +37,8 @@ menu: '开发/测试/构建'
 PROXY_TARGET=http://mock.xyz.com/api/
 ```
 
+> Tips: 由于新版 react dev utils 只支持一个 proxy 配置，建议使用 `charles` 等代理工具做二次代理
+
 ### 修改手动 h5 拆包设置 - 如默认配置不能满足需求
 
 > config/h5-alias.js

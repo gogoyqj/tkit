@@ -2,13 +2,14 @@
  * @description 局部Model ${camelName} 供 useModel 使用
  */
 import { Tction, M } from 'tkit-model';
+// import { TkitUtils as Utils } from 'tkit-types';
 import { api } from '@services';
 
 const Model = M({
   state: {},
   namespace: '${camelName}',
   reducers: {
-    doSomething: (state, action: Tction<{}>) => {
+    doSomething: (state, action: Tction<{}>): typeof state => {
       return {
         ...state
       };
@@ -44,7 +45,7 @@ const model = createModel({
   reducers: {
     // @params.0 state
     // @params.0 action
-    // doSomething: (state, action: Tction<{ username: string }>) => {
+    // doSomething: (state, action: Tction<{ username: string }>): typeof state => {
     //   return {
     //     ...state,
     //     username: action.payload.username

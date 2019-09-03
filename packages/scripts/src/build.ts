@@ -14,17 +14,20 @@ import { ensureFile } from 'tkit-utils';
 import argvParser from './argvParser';
 import { modulePath } from './consts';
 
-const argv = process.argv.slice(2);
-argvParser(argv, process.env);
-
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
+
+// Ensure environment variables are read.
+require('../config/env');
+
+// environment variables from cli have high priority
+const argv = process.argv.slice(2);
+argvParser(argv, process.env);
 
 process.on('unhandledRejection', err => {
   throw err;
 });
 
-require('../config/env');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const paths = require(ensureFile('config/paths', modulePath));
 // eslint-disable-next-line @typescript-eslint/no-var-requires

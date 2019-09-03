@@ -29,7 +29,7 @@ menu: '开发/测试/构建'
 -u : 路由页面，存在 this.props.match.params，组件名请使用 XXXPage
 -p : pureComponent
 -f : 慎用，覆盖已有
--w : 将组件 ts 与 less 文件包在同一个文件里，默认 false
+-w : 将组件 ts 与 less 文件包在同一个文件里，默认 true
 ```
 
 ### 创建无状态组件，Presenter、SFC
@@ -82,7 +82,7 @@ _1.3.0_ async reducers 存在反模式的问题，废弃且禁止使用
 model with async reducers
 
 ```ts
-import { Tction, M } from '@src/utils/useModel';
+import { Tction, M } from 'tkit-model';
 
 export const UserModel = M({
   namespace: 'test',
@@ -114,7 +114,7 @@ export const UserModel = M({
 与 `useModel hooks` 一起使用
 
 ```ts
-import { useModel, bindDispatchToAction } from '@src/utils/useModel';
+import { useModel } from 'tkit-model';
 
 const MySFCComponent = () => {
   const [store, actions] = useModel(UserModel);
@@ -127,12 +127,12 @@ const MySFCComponent = () => {
 - namespace 会以 `${namespace}/actionName` 自动注入到 dispatch 的 action 中，如果要触发本 model 或者其他 model 的 action:
 
 ```ts
-  import createModel, { Tction, tPut } from '@src/utils/createModel';
+  import createModel, { Tction } from 'tkit-model';
   // @cc: 请直接 import 该 model, 避免产生可能的循环依赖，造成运行时， model 为 undefined
   import otherModel from './otherModel';
 
   const myModel = createModel({
-    effects: *doSomethingAsync({ namespace, put }, action: Tction<{ username: string }>) {
+    effects: *doSomethingAsync({ namespace, put, tPut }, action: Tction<{ username: string }>) {
       // 触发其他 model action
       // way 1, rec
       yield tPut(otherModel.actions.actionsNameA, { username: '' });
@@ -224,6 +224,8 @@ const MySFCComponent = () => {
 typescript 化 redux-saga 的 put & call
 
 ```ts
+  import { TkitUtils as Utils } from 'tkit-types';
+
   // 注意： 不要把这里的 effect 和 model 的 effects 混淆，effects 最终会生成 action 并可以供 tPut 调用
   // args 类型必须是 effect 定义的参数类型
   tCall(effect, args: typed)
