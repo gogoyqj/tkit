@@ -18,9 +18,7 @@ export interface Tction<P> {
 type AbstractAction = Tction<any>;
 
 export interface Reducers<M> {
-  [doSomething: string]:
-    | (<P extends never>(state: Readonly<M>, action: P) => M)
-    | (<P extends AbstractAction>(state: Readonly<M>, action: P) => M);
+  [doSomething: string]: <P extends AbstractAction>(state: Readonly<M>, action: P) => M;
 }
 
 export function putWrapper(put = globalPut) {
@@ -72,21 +70,21 @@ export function globalPut<A>(action: A) {
  * @param effect effect 函数，如 service
  * @param args effect 函数的参数
  */
-export function tCall<E extends () => any>(effect: E): ReturnType<typeof sagaCall>;
+export function tCall<E extends () => any>(effect: E): Iterator<ReturnType<E>>;
 export function tCall<E extends (one: any) => any>(
   effect: E,
   args: TkitUtils.GetArgumentsType<E>[0] extends undefined
     ? never
     : TkitUtils.GetArgumentsType<E>[0]
-): ReturnType<typeof sagaCall>;
+): Iterator<ReturnType<E>>;
 export function tCall<E extends (...args: any[]) => any>(
   effect: E,
   ...args: TkitUtils.GetArgumentsType<E>
-): ReturnType<typeof sagaCall>;
+): Iterator<ReturnType<E>>;
 export function tCall<E extends (...args: any[]) => any>(
   effect: E,
   ...args: any[]
-): ReturnType<typeof sagaCall> {
+): Iterator<ReturnType<E>> {
   // 不可以: sagaCall(effect, ...args)
   return sagaCall.apply(null, [effect, ...args]);
 }
@@ -97,7 +95,6 @@ export interface BaseEffects {
 }
 export type CustomEffects = typeof sagaEffects & BaseEffects;
 
-type AsyncEffectWithoutPayload = <P extends never>(saga: CustomEffects, action: P) => Promise<any>;
 type AsyncEffectWithPayload = <P extends AbstractAction>(
   saga: CustomEffects,
   action: P
@@ -109,20 +106,13 @@ interface EffectOptions {
   type: EffectType;
   ms?: number;
 }
-export type MixWithoutPayload = [EffectWithoutPayload, EffectOptions];
 export type MixWithPayload = [EffectWithPayload, EffectOptions];
 export interface Effects {
-  [doSomethingAsync: string]:
-    | MixWithoutPayload
-    | MixWithPayload
-    | EffectWithoutPayload
-    | EffectWithPayload
-    | AsyncEffectWithPayload
-    | AsyncEffectWithoutPayload;
+  [doSomethingAsync: string]: MixWithPayload | EffectWithPayload | AsyncEffectWithPayload;
 }
 
 export interface LocalEffects {
-  [doSomethingAsync: string]: AsyncEffectWithPayload | AsyncEffectWithoutPayload;
+  [doSomethingAsync: string]: AsyncEffectWithPayload;
 }
 
 const defaultEffectOptions: EffectOptions = {

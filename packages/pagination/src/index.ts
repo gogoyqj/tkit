@@ -126,7 +126,9 @@ export function pagination<F extends TkitAjaxFunction, K extends string, P exten
     };
   };
   // cc: 目前只支持接收一个参数的拉取数据函数
-  function* fetchData(action: Action<{ params: TkitUtils.GetArgumentsType<F>[0] }>) {
+  function* fetchData(
+    action: Action<{ params: TkitUtils.GetArgumentsType<F>[0] }>
+  ): Iterator<any, any, any> {
     let res;
     try {
       const params = action.payload ? action.payload.params : {};

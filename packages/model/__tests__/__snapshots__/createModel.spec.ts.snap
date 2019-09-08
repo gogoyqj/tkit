@@ -12,21 +12,19 @@ Array [
     "category": 1,
     "code": 2322,
     "fileName": "createModelSamples/testCreateModelFail.ts",
-    "messageText": "Type '<P extends never>(state: Readonly<State>, action: Tction<string>) => { id: string; name: string; }' is not assignable to type '(<P extends never>(state: Readonly<State>, action: P) => State) | (<P extends Tction<any>>(state: Readonly<State>, action: P) => State)'.
-  Type '<P extends never>(state: Readonly<State>, action: Tction<string>) => { id: string; name: string; }' is not assignable to type '<P extends never>(state: Readonly<State>, action: P) => State'.
-    Type '{ id: string; name: string; }' is not assignable to type 'State'.
-      Types of property 'id' are incompatible.
-        Type 'string' is not assignable to type 'number'.",
+    "messageText": "Type '<P extends Tction<any>>(state: Readonly<State>, action: Tction<string>) => { id: string; name: string; }' is not assignable to type '<P extends Tction<any>>(state: Readonly<State>, action: P) => State'.
+  Type '{ id: string; name: string; }' is not assignable to type 'State'.
+    Types of property 'id' are incompatible.
+      Type 'string' is not assignable to type 'number'.",
   },
   Object {
     "category": 1,
     "code": 2322,
     "fileName": "createModelSamples/testCreateModelFail.ts",
-    "messageText": "Type '<P extends never>(state: Readonly<State>, action: Tction<{ user: { id: string; }; }>) => { id: string; name: string; }' is not assignable to type '(<P extends never>(state: Readonly<State>, action: P) => State) | (<P extends Tction<any>>(state: Readonly<State>, action: P) => State)'.
-  Type '<P extends never>(state: Readonly<State>, action: Tction<{ user: { id: string; }; }>) => { id: string; name: string; }' is not assignable to type '<P extends never>(state: Readonly<State>, action: P) => State'.
-    Type '{ id: string; name: string; }' is not assignable to type 'State'.
-      Types of property 'id' are incompatible.
-        Type 'string' is not assignable to type 'number'.",
+    "messageText": "Type '<P extends Tction<any>>(state: Readonly<State>, action: Tction<{ user: { id: string; }; }>) => { id: string; name: string; }' is not assignable to type '<P extends Tction<any>>(state: Readonly<State>, action: P) => State'.
+  Type '{ id: string; name: string; }' is not assignable to type 'State'.
+    Types of property 'id' are incompatible.
+      Type 'string' is not assignable to type 'number'.",
   },
   Object {
     "category": 1,
@@ -38,21 +36,19 @@ Array [
     "category": 1,
     "code": 2322,
     "fileName": "createModelSamples/testCreateModelFail.ts",
-    "messageText": "Type '<P extends never>(state: Readonly<State>, action: Tction<number>) => { name: number; id: number; }' is not assignable to type '(<P extends never>(state: Readonly<State>, action: P) => State) | (<P extends Tction<any>>(state: Readonly<State>, action: P) => State)'.
-  Type '<P extends never>(state: Readonly<State>, action: Tction<number>) => { name: number; id: number; }' is not assignable to type '<P extends never>(state: Readonly<State>, action: P) => State'.
-    Type '{ name: number; id: number; }' is not assignable to type 'State'.
-      Types of property 'name' are incompatible.
-        Type 'number' is not assignable to type 'string'.",
+    "messageText": "Type '<P extends Tction<any>>(state: Readonly<State>, action: Tction<number>) => { name: number; id: number; }' is not assignable to type '<P extends Tction<any>>(state: Readonly<State>, action: P) => State'.
+  Type '{ name: number; id: number; }' is not assignable to type 'State'.
+    Types of property 'name' are incompatible.
+      Type 'number' is not assignable to type 'string'.",
   },
   Object {
     "category": 1,
     "code": 2322,
     "fileName": "createModelSamples/testCreateModelFail.ts",
-    "messageText": "Type '<P extends never>(state: Readonly<State>, action: Tction<{ user: { name: number; }; }>) => { name: number; id: number; }' is not assignable to type '(<P extends never>(state: Readonly<State>, action: P) => State) | (<P extends Tction<any>>(state: Readonly<State>, action: P) => State)'.
-  Type '<P extends never>(state: Readonly<State>, action: Tction<{ user: { name: number; }; }>) => { name: number; id: number; }' is not assignable to type '<P extends never>(state: Readonly<State>, action: P) => State'.
-    Type '{ name: number; id: number; }' is not assignable to type 'State'.
-      Types of property 'name' are incompatible.
-        Type 'number' is not assignable to type 'string'.",
+    "messageText": "Type '<P extends Tction<any>>(state: Readonly<State>, action: Tction<{ user: { name: number; }; }>) => { name: number; id: number; }' is not assignable to type '<P extends Tction<any>>(state: Readonly<State>, action: P) => State'.
+  Type '{ name: number; id: number; }' is not assignable to type 'State'.
+    Types of property 'name' are incompatible.
+      Type 'number' is not assignable to type 'string'.",
   },
 ]
 `;
