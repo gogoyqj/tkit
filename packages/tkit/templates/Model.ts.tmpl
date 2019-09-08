@@ -55,7 +55,7 @@ const model = createModel({
   effects: {
     // @params.0 sagaEffect
     // @params.0 action
-    // *doSomethingAsync({ namespace, put, tPut, tCall }, action: Tction<{ username: string }>): Iterator<{}> {
+    // *doSomethingAsync({ namespace, put, tPut, tCall }, action: Tction<{ username: string }>): Iterator<{}, any, any> {
     //   yield put({ type: `$\{namespace}/doLogin`, payload: { username: '' } });
     //   const data: Utils.GetROA<api.getTest> = yield tCall(api.getTest, 2);
     //   yield tPut(model.actions.doLogin, { username: '' });

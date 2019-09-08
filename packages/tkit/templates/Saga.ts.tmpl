@@ -17,7 +17,7 @@ export type <%= actionName %>ActionType = ReturnType<typeof <%= actionName %>>;
 export type <%= actionName %>SuccessActionType = ReturnType<typeof <%= actionName %>Success>;
 export type <%= actionName %>FailedActionType = ReturnType<typeof <%= actionName %>Failed>;
 
-export function* fetchData(action: <%= actionName %>ActionType) {
+export function* fetchData(action: <%= actionName %>ActionType):Iterator<{}, any, any> {
   let res:Utils.BasicResult;
   try {
     res = yield tCall(delay, 20);
