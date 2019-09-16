@@ -1,6 +1,6 @@
 {
-  "name": "tkit-model",
-  "version": "3.0.3",
+  "name": "tkit-async",
+  "version": "3.0.0",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -26,13 +26,16 @@
     "react-dom": ">=16.8.3"
   },
   "dependencies": {
-    "tkit-actions": "file:../actions",
-    "redux-actions": "^2.6.4",
-    "redux-saga": "^0.16.2",
+    "tkit-ajax": "file:../ajax",
+    "tkit-event": "file:../event",
+    "tkit-model": "file:../model",
+    "tkit-types": "file:../types",
+    "eventemitter3": "^4.0.0",
+    "react": "^16.9.0",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "tkit-types": "file:../types",
+    "tkit-jest-config": "file:../jest-config",
     "tkit-typescript-config": "file:../typescript-config"
   }
 }

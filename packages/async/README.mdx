@@ -1,0 +1,78 @@
+---
+name: async
+menu: 'components'
+route: /tkit/async
+---
+
+import { Props, Playground } from 'docz';
+import Readme from './README.md';
+import Async from './src/Async.tsx';
+import Example, {
+  StatusFaker,
+  FormCoreFaker,
+  ModalFaker,
+  FormFaker,
+  ResultTypeFaker,
+  AsyncFaker,
+  AsyncConfirmedFaker
+} from './__tests__/Example.tsx';
+
+<Readme />
+
+## Async
+
+> - loading - 显示加载效果的组件
+> - tips - 成功、错误提示函数
+> - modal - 弹窗组件
+> - form - 表单组件
+
+<Props of={Async} />
+
+### AsyncModalProps
+
+> modal 必须实现的 props，兼容 antd modal
+
+<Props of={ModalFaker} />
+
+### AsyncStatus
+
+> 单条异步操作状态数据结构
+
+<Props of={StatusFaker} />
+
+### AsyncFormProps
+
+> form 表单必须实现的 props
+
+<Props of={FormFaker} />
+
+### AsyncForm
+
+> form 表单必须实现的方法
+
+<Props of={FormCoreFaker} />
+
+### AsyncResultEventType
+
+> tips 接收到的消息
+
+<Props of={ResultTypeFaker} />
+
+## api
+
+### doAsync
+
+<Props of={AsyncFaker} />
+
+### doAsyncConfirmed
+
+> - indicator: 自定义单条操作加载效果，`null` 则不显示加载效果
+> - errorMsg & successMsg: 配置为 false，则不显示操作结果提示
+> - params: fetch 单个参数下使用
+> - paramsGenerator: fetch 多个参数下使用，比如返回数组
+
+<Props of={AsyncConfirmedFaker} />
+
+<Playground>
+  <Example />
+</Playground>

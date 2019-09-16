@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tkit-async work ok check sample/asyncFail.tsx work ok 1`] = `
+Array [
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/asyncFail.tsx",
+    "messageText": "Type '(props: { wrong: number; }) => any' is not assignable to type 'ComponentType<AsyncFormProps>'.
+  Type '(props: { wrong: number; }) => any' is not assignable to type 'FunctionComponent<AsyncFormProps>'.
+    Types of parameters 'props' and 'props' are incompatible.
+      Property 'wrong' is missing in type 'PropsWithChildren<AsyncFormProps>' but required in type '{ wrong: number; }'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/asyncFail.tsx",
+    "messageText": "Type '(props: { wrong: number; }) => any' is not assignable to type 'ComponentType<{ status: AsyncStatus; }>'.
+  Type '(props: { wrong: number; }) => any' is not assignable to type 'FunctionComponent<{ status: AsyncStatus; }>'.
+    Types of parameters 'props' and 'props' are incompatible.
+      Property 'wrong' is missing in type 'PropsWithChildren<{ status: AsyncStatus; }>' but required in type '{ wrong: number; }'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/asyncFail.tsx",
+    "messageText": "Type '(props: { wrong: number; }) => any' is not assignable to type '(e: AsyncResultEventType) => any'.
+  Types of parameters 'props' and 'e' are incompatible.
+    Property 'wrong' is missing in type 'AsyncResultEventType' but required in type '{ wrong: number; }'.",
+  },
+]
+`;
+
+exports[`tkit-async work ok check sample/asyncOK.tsx work ok 1`] = `Array []`;
+
+exports[`tkit-async work ok check sample/doFail.ts work ok 1`] = `
+Array [
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type '[number]'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'never'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type '[number, string]'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type '[number]'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type 'never'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "samples/doFail.ts",
+    "messageText": "Type 'string' is not assignable to type '[number, string]'.",
+  },
+]
+`;
+
+exports[`tkit-async work ok check sample/doOK.ts work ok 1`] = `Array []`;

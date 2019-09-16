@@ -99,7 +99,6 @@ type AsyncEffectWithPayload = <P extends AbstractAction>(
   saga: CustomEffects,
   action: P
 ) => Promise<any>;
-type EffectWithoutPayload = <P extends never>(saga: CustomEffects, action: P) => Iterator<{}>;
 type EffectWithPayload = <P extends AbstractAction>(saga: CustomEffects, action: P) => Iterator<{}>;
 type EffectType = 'takeEvery' | 'takeLatest' | 'throttle';
 interface EffectOptions {
@@ -131,10 +130,10 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
 }) {
   type ReducerName = keyof R;
   type EffectName = keyof E;
-  // @fix: 修复当 model effects 缺省的情况下，推断 TYPES 字符串类型错误的bug
+  // @IMP: 修复当 model effects 缺省的情况下，推断 TYPES 字符串类型错误的bug
   type ActionTypes = { [doSomething in ReducerName]: string } &
     { [doSomething in EffectName]: string };
-  // @fix: 修复当 model effects 缺省的情况下，类型推断错误的bug
+  // @IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
   type SyncActions = {
     [doSomething in ReducerName]: (TkitUtils.GetArgumentsType<R[doSomething]>[1] extends
       | never
@@ -142,7 +141,8 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
       ? () => any
       : (<P extends TkitUtils.GetArgumentsType<R[doSomething]>[1]>(payload: P['payload']) => P));
   };
-  // @fix: 修复当 model effects 缺省的情况下，类型推断错误的bug
+  // @IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
+  // @FIXME: 泛型则丢类型
   type AsyncActions = {
     [doSomething in EffectName]: (TkitUtils.GetArgumentsType<
       TkitUtils.GetModelEffect<E[doSomething]>
@@ -209,7 +209,8 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
       yield sagaAll(genSagas);
     },
     TYPES: TYPES as ActionTypes,
-    effects: { ...effects }
+    effects: { ...effects },
+    __model: model
   };
 }
 
@@ -232,7 +233,7 @@ export async function exeGenerator<A extends any[]>(
   effect: (...args: A) => IterableIterator<any>,
   ...args: A
 ) {
-  const generator = effect(...args);
+  const generator = effect.apply(null, args);
   let result = generator.next();
   while (!result.done) {
     await result.value;

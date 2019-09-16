@@ -66,6 +66,12 @@ const MySFCComponent = props => {
 };
 ```
 
+tips: 自 @3.0.3 起，默认关闭了 `useModel` 开发阶段运行日志，如需要打印日志，请配置:
+
+```ts
+window.__TKIT_USE_MODEL_LOGGER__ = console.log;
+```
+
 ### createModel
 
 > 创建全局 redux model

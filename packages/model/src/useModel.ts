@@ -12,6 +12,12 @@ import createModel, {
   exeGenerator
 } from './createModel';
 
+declare global {
+  interface Window {
+    __TKIT_USE_MODEL_LOGGER__: (...args: any) => any;
+  }
+}
+
 export function Model<M, R extends Reducers<M>, E extends LocalEffects>(model: {
   namespace: string;
   state: M;
@@ -61,7 +67,15 @@ const commonReducer: (reducer: <M>(prevState: M, action: Tction<any>) => M) => a
         useMemo(
           () => <M>(prevState: M, action: Tction<any>) => {
             const newState = reducer(prevState, action);
-            console.log('LOCAL ACTION', action['type'], prevState, action, newState);
+            if (window.__TKIT_USE_MODEL_LOGGER__) {
+              window.__TKIT_USE_MODEL_LOGGER__(
+                'LOCAL ACTION',
+                action['type'],
+                prevState,
+                action,
+                newState
+              );
+            }
             return newState;
           },
           [reducer]
