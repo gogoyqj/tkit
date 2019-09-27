@@ -21,16 +21,67 @@ import Example, {
 
 ## Async
 
-> - loading - 显示加载效果的组件
-> - tips - 成功、错误提示函数
-> - modal - 弹窗组件
-> - form - 表单组件
+### loading 属性
+
+显示加载效果的组件，例如直接使用 Spin:
+
+```ts
+arg => <Spin spinning={arg.status.isFetch} />;
+```
+
+### tips 属性
+
+成功、错误提示函数，例如:
+
+```ts
+ const message = { error: () => 0, success: () => 1 }
+ ({ type, message: msg }) => message[type](msg);
+```
+
+### modal 属性
+
+弹窗组件，可直接使用 antd Modal 或实现如下组件:
+
+```ts
+export class ModalFaker extends React.Component<AsyncModalProps> {
+  public render() {
+    const { visible, title, content, className, confirmLoading, onOk, onCancel } = this.props;
+    return <div>{content}</div>;
+  }
+}
+```
+
+### form 属性
+
+表单组件，用来渲染表单，并在 model.onOk 时提交表单
+
+```ts
+export class FormFaker extends React.Component<AsyncFormProps> {
+  public static fakeData = {
+    name: 'skipper'
+  };
+  public constructor(props: AsyncFormProps) {
+    super(props);
+    if (props.getForm) {
+      props.getForm(this);
+    }
+  }
+  public submit() {
+    return FormFaker.fakeData;
+  }
+  public render() {
+    return <div>nihao</div>;
+  }
+}
+```
+
+### 表单组件
 
 <Props of={Async} />
 
 ### AsyncModalProps
 
-> modal 必须实现的 props，兼容 antd modal
+> modal 组件必须实现的 props，兼容 antd modal
 
 <Props of={ModalFaker} />
 
@@ -42,15 +93,19 @@ import Example, {
 
 ### AsyncFormProps
 
-> form 表单必须实现的 props
+> form 表单组件必须实现的 props
 
 <Props of={FormFaker} />
 
+通过 getForm 方法拿到表单组件示例，并在 model.onOk 时候调用表单实例的 submit 方法
+
 ### AsyncForm
 
-> form 表单必须实现的方法
+> form 表单组件必须实现的方法
 
 <Props of={FormCoreFaker} />
+
+submit 方法需返回表单 values 对象或者 Promise&lt;values>
 
 ### AsyncResultEventType
 
@@ -73,6 +128,110 @@ import Example, {
 
 <Props of={AsyncConfirmedFaker} />
 
+## Demo
+
 <Playground>
   <Example />
 </Playground>
+
+### Demo Source Code
+
+```tsx
+import React from 'react';
+import { Spin, Modal, Button, Input, message } from 'antd';
+import { AjaxPromise, TkitAjaxFunction } from 'tkit-ajax';
+import { AsyncResultEventType, doAsync, doAsyncConfirmed, Async } from 'tkit-async';
+
+// @IMP: 表单组件
+export class FormFaker extends React.Component<AsyncFormProps> {
+  public static fakeData = {
+    name: 'skipper'
+  };
+  public constructor(props: AsyncFormProps) {
+    super(props);
+    if (props.getForm) {
+      props.getForm(this);
+    }
+  }
+  public submit() {
+    return FormFaker.fakeData;
+  }
+  public render() {
+    return <div>nihao</div>;
+  }
+}
+
+const loadData = (id: number): AjaxPromise<any> => {
+  console.log('running effect');
+  return new Promise((rs, rj) => {
+    setTimeout(() => rs({ code: 0, message: '逗我呢', result: { id } }), 1000);
+  });
+};
+
+export default function Example() {
+  return (
+    <div>
+      <Async
+        form={FormFaker}
+        loading={arg => <Spin spinning={arg.status.isFetch} />}
+        modal={Modal}
+        tips={({ type, message: msg }) => message[type](msg)}
+      />
+      <Button
+        onClick={() => {
+          doAsync({
+            fetch: loadData,
+            callback: console.log,
+            modalProps: {
+              title: 'nihao',
+              content: (
+                <div>
+                  <Input />
+                  <Button
+                    onClick={() => {
+                      doAsync({
+                        fetch: loadData,
+                        modalProps: {
+                          content: '你好',
+                          title: '2'
+                        }
+                      });
+                    }}
+                  >
+                    嵌套了
+                  </Button>
+                </div>
+              )
+            }
+          });
+        }}
+      >
+        弹窗测试
+      </Button>
+      &nbsp;
+      <Button
+        onClick={() => {
+          doAsyncConfirmed({
+            fetch: loadData,
+            callback: console.log
+          });
+        }}
+      >
+        不弹窗带loading测试
+      </Button>
+      &nbsp;
+      <Button
+        onClick={() => {
+          doAsyncConfirmed({
+            fetch: loadData,
+            callback: console.log,
+            indicator: null
+          });
+        }}
+      >
+        不显示loading测试
+      </Button>
+    </div>
+  );
+}
+```

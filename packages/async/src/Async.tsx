@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { EventCenter } from 'tkit-event';
-import { useAsync } from './useAsync';
+import { useAsync, UseAsyncConfig } from './useAsync';
 import { AsyncStatus, AsyncFormProps, AsyncModalProps } from './asyncModel';
 import {
   ASYNC_EFFECT_EVENT_NAME,
@@ -18,7 +18,14 @@ export interface AsyncProps {
 
 export default function Async(props: AsyncProps) {
   const { loading: Loading, modal: Modal, form: Form, tips } = props;
-  const [queue, actions] = useAsync({ renderForm: props => <Form {...props} /> });
+  // @IMP: 优化
+  const config: UseAsyncConfig = useMemo(
+    () => ({
+      renderForm: props => <Form {...props} />
+    }),
+    []
+  );
+  const [queue, actions] = useAsync(config);
   useEffect(() => {
     // @IMP: 异步，解决 Render methods should be a pure function of props and state.
     const handler = tips ? (...args: any) => setTimeout(() => tips.apply(null, args), 0) : tips;
