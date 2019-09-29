@@ -4,8 +4,8 @@ import { mount } from 'enzyme';
 import { EventCenter } from '@src/event';
 import EventWrapper, { IEventWrapperProps } from '@src/EventWrapper';
 
-describe('common/EventWrapper', () => {
-  describe('common/EventWrapper', () => {
+describe('event/EventWrapper', () => {
+  describe('event/EventWrapper', () => {
     it('subscribe works ok', () => {
       const mes = {};
       const callback = jest.fn(() => null);
