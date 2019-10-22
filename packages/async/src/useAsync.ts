@@ -20,7 +20,7 @@ export function useAsync(
   const [state, actions] = useModel(asyncModel);
   const asyncFormater = useCallback(
     <P extends Omit<IAsyncActionProps<any>, 'ASYNC_ID'>>(payload: P): P => {
-      const { modalProps = {}, formProps } = payload;
+      const { modalProps = {}, formProps, onCancel: handleCancel } = payload;
       const ASYNC_ID = getAsyncId();
       let form: AsyncForm | null;
       const newProps = formProps
@@ -50,18 +50,23 @@ export function useAsync(
             await onCancel();
           }
           await actions.doAsyncCancel(ASYNC_ID || -1);
+          await (handleCancel && handleCancel());
         };
         // @IMP: Modal的关闭不再受onOk控制
         newProps.onOk = async () => {
-          let extraParams: any = {};
-          if (onOk) {
-            extraParams = await onOk();
+          try {
+            let extraParams: any = {};
+            if (onOk) {
+              extraParams = await onOk();
+            }
+            await actions.doAsyncConfirmed({
+              ASYNC_ID,
+              ...payload,
+              extraParams
+            });
+          } catch (e) {
+            // do nothing
           }
-          await actions.doAsyncConfirmed({
-            ASYNC_ID,
-            ...payload,
-            extraParams
-          });
         };
       }
       return {

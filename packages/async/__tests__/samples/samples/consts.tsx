@@ -26,7 +26,7 @@ export const tips = (props: AsyncModalProps) => null;
 export const Loading = (props: { status: AsyncStatus }) => null;
 
 // @IMP: type ComponentType<P = {}> = ComponentClass<P> | FunctionComponent<P>;
-export const FormFaker2 = (props: { wrong: number }) => null;
+export const FormFaker2 = (props: { getForm: number }) => null;
 export const Modal2 = (props: { wrong: number }) => null;
 export const tips2 = (props: { wrong: number }) => null;
 export const Loading2 = (props: { wrong: number }) => null;

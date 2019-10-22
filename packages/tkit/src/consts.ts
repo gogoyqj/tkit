@@ -31,3 +31,7 @@ export const templatesDir = path.join(coreDirectory, 'templates');
 export const appDirectory = fs.realpathSync(process.cwd());
 export const baseSourceDir = path.join(appDirectory, 'src');
 export const baseTestsDir = path.join(appDirectory, '__tests__');
+// eslint-disable-next-line @typescript-eslint/no-angle-bracket-type-assertion
+export const TSVersion = (<string>require('typescript/package.json').version)
+  .split('.')
+  .map((v: string) => Number(v));

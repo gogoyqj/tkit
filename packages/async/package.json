@@ -1,6 +1,6 @@
 {
   "name": "tkit-async",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -30,7 +30,6 @@
     "tkit-event": "file:../event",
     "tkit-model": "file:../model",
     "tkit-types": "file:../types",
-    "eventemitter3": "^4.0.0",
     "react": "^16.8.3",
     "tslib": "^1.9.3"
   },

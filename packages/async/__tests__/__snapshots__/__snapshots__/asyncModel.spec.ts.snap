@@ -6,10 +6,12 @@ Array [
     "category": 1,
     "code": 2322,
     "fileName": "samples/asyncFail.tsx",
-    "messageText": "Type '(props: { wrong: number; }) => any' is not assignable to type 'ComponentType<AsyncFormProps>'.
-  Type '(props: { wrong: number; }) => any' is not assignable to type 'FunctionComponent<AsyncFormProps>'.
+    "messageText": "Type '(props: { getForm: number; }) => any' is not assignable to type 'ComponentType<AsyncFormProps>'.
+  Type '(props: { getForm: number; }) => any' is not assignable to type 'FunctionComponent<AsyncFormProps>'.
     Types of parameters 'props' and 'props' are incompatible.
-      Property 'wrong' is missing in type 'PropsWithChildren<AsyncFormProps>' but required in type '{ wrong: number; }'.",
+      Type 'PropsWithChildren<AsyncFormProps>' is not assignable to type '{ getForm: number; }'.
+        Types of property 'getForm' are incompatible.
+          Type '(f: AsyncForm) => any' is not assignable to type 'number'.",
   },
   Object {
     "category": 1,

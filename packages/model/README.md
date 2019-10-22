@@ -98,3 +98,71 @@ const myModel = createModel({
   }
 })
 ```
+
+### Effects
+
+自`3.0.6`版本起，Effects 提供了更友好的控制副作用开始、成功、失败交互效果的协议，结合`async@3.0.4+`运用，可以明显减轻开发负担
+
+所有来自 Effects 的 async 副作用，在 async 内会标记为：
+
+> `channel: 'tkit-model/effect'`
+
+#### 简单 Effects
+
+```ts
+{
+  effects: {
+    /**
+     * 显示全局的loading效果
+     */
+    doSomethingWithLoading: [
+      function*({ tPut, tCall }, action: Tction<{ id: string }>): Iterator<{}> {
+        /**
+         * 抛出全局错误信息
+         */
+        throw '操作失败';
+        /**
+         * 抛出全局成功信息
+         */
+        return '操作成功';
+      },
+      {
+        type: 'takeEvery', // it all depends
+        loading: true
+      }
+    ],
+    *doSomethingAsync({ tPut, tCall }, action: Tction<{ id: string }>): Iterator<{}> {
+      /**
+       * 抛出全局错误信息
+       */
+      throw '操作失败';
+    }
+  }
+}
+```
+
+#### 带弹出框 Effects
+
+```ts
+import { doAsync } from 'tkit-async';
+{
+  effects: {
+    /**
+     * 弹窗
+     */
+    *doSometingPopAsync({ tPut, tCall }, action: Tction<{ title: string, formProps }>): Iterator<{}> {
+      const { title, formProps } = action.payload;
+      const res = yield doAsync({
+        fetch: () => {},
+        modalProps: {
+          title
+        },
+        formProps,
+        successMsg: false,
+        errorMsg: false
+      });
+      return res.code ? res.message || '操作失败' : '操作成功';
+    }
+  }
+}
+```

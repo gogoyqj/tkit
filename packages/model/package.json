@@ -1,6 +1,6 @@
 {
   "name": "tkit-model",
-  "version": "3.0.3",
+  "version": "3.0.6",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "jest --all --env=jsdom",
-    "build": "tsc --project tsconfig.prod.json"
+    "build": "rm -rf lib && tsc --project tsconfig.prod.json"
   },
   "peerDependencies": {
     "react": ">=16.8.3",
@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "tkit-actions": "file:../actions",
+    "tkit-async": "file:../async",
+    "tkit-event": "file:../event",
     "redux-actions": "^2.6.4",
     "redux-saga": "^0.16.2",
     "tslib": "^1.9.3"

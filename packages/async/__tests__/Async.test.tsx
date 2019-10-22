@@ -30,6 +30,7 @@ describe('tkit-async/useAsync works ok', () => {
     const loading = jest.fn((props: { status: AsyncStatus }) => null);
     const tips = jest.fn();
     const submit = jest.spyOn(FormFaker.prototype, 'submit');
+    const catchCancel = jest.fn();
     const callback = jest.fn();
     const success = jest.fn();
     const fail = jest.fn();
@@ -66,19 +67,23 @@ describe('tkit-async/useAsync works ok', () => {
               onError: fail,
               fetch: effect,
               paramsGenerator: paramsFun
-            })
+            }).then(() => 0, catchCancel)
           }
-          onMouseUp={() =>
-            doAsync({
-              formProps: {},
-              callback,
-              onSuccess: success,
-              onError: fail,
-              modalProps: {
-                className: 'm2'
-              },
-              fetch: effect
-            })
+          onMouseUp={
+            () =>
+              doAsync({
+                formProps: {},
+                callback,
+                onSuccess: success,
+                onError: fail,
+                modalProps: {
+                  className: 'm2'
+                },
+                fetch: effect
+                /**
+                 * @TODO:
+                 */
+              }).then(() => 0, catchCancel) // @IMP: 捕获错误
           }
           onMouseDown={() =>
             doAsyncConfirmed({
@@ -146,7 +151,7 @@ describe('tkit-async/useAsync works ok', () => {
       tips.mockClear();
     }
 
-    // onCanel
+    // onCancel
     {
       const cancelButtons = container.querySelectorAll('.cancel');
       expect(cancelButtons.length).toEqual(1);
@@ -155,8 +160,10 @@ describe('tkit-async/useAsync works ok', () => {
       });
       await delay();
 
+      expect(catchCancel).toBeCalled();
       expect(callback).toBeCalledTimes(0);
       callback.mockClear();
+      catchCancel.mockClear();
     }
 
     // confirm OK

@@ -6,7 +6,7 @@ import fsX from 'fs-extra';
 
 import { astHandler } from './utils/astHandler';
 import _ from './utils/xlodash';
-import { OPTIONS, CONST, templatesDir, baseSourceDir, baseTestsDir } from './consts';
+import { OPTIONS, CONST, templatesDir, baseSourceDir, baseTestsDir, TSVersion } from './consts';
 
 // @cc: 发现 eslint auto fix {}/type to interface cause bug
 export type OptionType = { [opt in keyof typeof OPTIONS]?: boolean } & {
@@ -44,6 +44,7 @@ export const handle = (
   }
 
   // format
+  const camelCaseFeature = _.camelCase(feature);
   feature = _.kebabCase(feature); // a-a-b like
   const lowerName = _.lowerCase(name);
   const camelName = _.camelCase(name); // aAB like
@@ -58,7 +59,7 @@ export const handle = (
   let presenterName = `SFC${pascalName}`;
   let componentName = pascalName;
   const constsName = _.upperSnakeCase(pascalName);
-  const featureSagaName = `${feature}Saga`;
+  const featureSagaName = `${camelCaseFeature}Saga`;
   const cssClassName = `k-${feature}-${_.kebabCase(name)}`;
 
   const pureStateName = `pure${pascalName}State`;
@@ -71,6 +72,9 @@ export const handle = (
 
   const h5 = options.mobile ? (options.mobile === 'web' ? '.web' : '.h5') : '';
   const featureIndex = path.join(sourceDir, `index${h5}.ts`);
+
+  // @IMP: 在generator处理上兼容3.6.*以下的typescript版本
+  const isModernTS = TSVersion[0] > 3 || (TSVersion[0] === 3 && TSVersion[1] > 5) ? true : false;
 
   // init feature
   let needInit;
@@ -380,7 +384,9 @@ export const handle = (
     camelName,
     pascalName,
 
-    fileName
+    fileName,
+
+    isModernTS
   };
 
   if (
@@ -483,14 +489,14 @@ export const handle = (
     astHandler({
       [path.join(baseSourceDir, 'common', 'routeConfig.ts')]: {
         moduleSpecifier: `@features/${feature}/route`,
-        defaultImport: `${feature}Route`,
+        defaultImport: `${camelCaseFeature}Route`,
         vars: [
           {
             declarationKind: CONST,
             declarations: [
               {
                 name: 'childRoutes',
-                initializer: `${feature}Route`
+                initializer: `${camelCaseFeature}Route`
               }
             ]
           }
@@ -513,14 +519,14 @@ export const handle = (
       },
       [path.join(baseSourceDir, 'common', 'rootReducer.ts')]: {
         moduleSpecifier: `@features/${feature}/redux/reducer`,
-        defaultImport: `${feature}Reducer`,
+        defaultImport: `${camelCaseFeature}Reducer`,
         vars: [
           {
             declarationKind: CONST,
             declarations: [
               {
                 name: 'reducerMap',
-                initializer: `${feature}: ${feature}Reducer`
+                initializer: `${camelCaseFeature}: ${camelCaseFeature}Reducer`
               }
             ]
           }

@@ -8,6 +8,12 @@ export interface AsyncEffectEventType {
 
 export const ASYNC_RESULT_EVENT_NAME = 'ASYNC_RESULT_EVENT_NAME';
 export interface AsyncResultEventType {
+  /**
+   * 副作用信息类型
+   */
   type: 'error' | 'success';
+  /**
+   * 副作用提示信息
+   */
   message: React.ReactNode;
 }

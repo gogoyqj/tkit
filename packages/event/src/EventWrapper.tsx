@@ -10,7 +10,13 @@ export interface IEventWrapperProps extends React.Props<any> {
 }
 
 interface IEventWrapperHOCProps {
+  /**
+   * 被装饰的组件
+   */
   Cp: React.SFC | React.ComponentClass;
+  /**
+   * 被装饰组件的Props
+   */
   originProps: any;
 }
 

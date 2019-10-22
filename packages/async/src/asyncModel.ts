@@ -6,28 +6,46 @@ import { EventCenter } from 'tkit-event';
 import { ASYNC_RESULT_EVENT_NAME, AsyncResultEventType } from './consts';
 
 export interface AsyncForm {
+  /**
+   * Form表单组件必须实现submit方法
+   */
   submit: (...args: any) => any;
   [other: string]: any;
 }
 
 export interface AsyncFormProps {
-  getForm: (f: AsyncForm | null) => any;
+  /**
+   * Form表单组件需支持getForm Props，并通过该回调传递组件实例
+   */
+  getForm?: (f: AsyncForm | null) => any;
   [other: string]: any;
 }
 
 export interface AsyncModalProps {
-  // 是否显示Modal
+  /**
+   * 是否显示Modal
+   */
   visible?: boolean;
-  // 标题
+  /**
+   * 标题
+   */
   title?: React.ReactNode;
-  // 内容
+  /**
+   * 内容
+   */
   content?: React.ReactNode;
   className?: string;
-  // 确定时显示loading效果
+  /**
+   * 确定时显示loading效果
+   */
   confirmLoading?: boolean;
-  // 确定按钮
+  /**
+   * 点击确定按钮回调
+   */
   onOk?: (...args: any) => Promise<any> | void;
-  // 取消按钮
+  /**
+   * 点击取消按钮回调
+   */
   onCancel?: (...args: any) => Promise<any> | void;
   [other: string]: any;
 }
@@ -47,42 +65,107 @@ export type EnsureSingleArgumentsType<F extends TkitAjaxFunction> = TkitUtils.Ge
   : never;
 
 export interface NewAsyncParams<F extends TkitAjaxFunction> {
-  // F 仅接收一个参数适用
+  /**
+   * F 仅接收一个参数适用
+   */
   params?: EnsureSingleArgumentsType<F>;
+  /**
+   * 回调
+   */
   callback?: (res: TkitUtils.GetReturnTypeOfAsyncFun<F>) => any;
+  /**
+   * 取消回调
+   */
+  onCancel?: () => any;
+  /**
+   * 错误回调
+   */
   onError?: (res: TkitUtils.GetReturnTypeOfAsyncFun<F>) => any;
+  /**
+   * 成功回调
+   */
   onSuccess?: (res: TkitUtils.GetReturnTypeOfAsyncFun<F>) => any;
+  /**
+   * 错误信息，配置成false，则不提示错误信息
+   */
   errorMsg?: ((res: TkitUtils.GetReturnTypeOfAsyncFun<F>) => React.ReactNode) | React.ReactNode;
+  /**
+   * 成功信息，配置成false，则不提示成功信息
+   */
   successMsg?: ((res: TkitUtils.GetReturnTypeOfAsyncFun<F>) => React.ReactNode) | React.ReactNode;
-  // F 接收多个参数适用 - 必须返回数组
+  /**
+   * F 接收多个参数适用 - 必须返回数组
+   */
   paramsGenerator?: (params: NewAsyncParams<F>) => EnsureArgumentsType<F>;
   ASYNC_ID?: number;
-  extraParams?: EnsureSingleArgumentsType<F>; // 表单情形下返回数据
+  /**
+   * 表单情形下返回数据
+   */
+  extraParams?: EnsureSingleArgumentsType<F>;
+  /**
+   * 来源
+   */
+  channel?: string;
 }
 
 export interface IAsyncConfirmedParams<F extends TkitAjaxFunction> extends NewAsyncParams<F> {
+  /**
+   * 副作用函数
+   */
   fetch: F;
+  /**
+   * loading效果，配置成false不显示loading
+   */
   indicator?: React.ReactNode;
+  /**
+   * 来源
+   */
+  channel?: string;
 }
 
 export interface IAsyncActionProps<F extends TkitAjaxFunction> extends NewAsyncParams<F> {
+  /**
+   * 副作用函数
+   */
   fetch: F;
-  // 弹窗配置
+  /**
+   * Modal弹窗配置
+   */
   modalProps?: AsyncModalProps;
-  // 表单配置
+  /**
+   * Form表单配置
+   */
   formProps?: Partial<AsyncFormProps>;
 }
 
 // 单个异步操作
 export interface AsyncStatus extends Omit<IAsyncActionProps<TkitAjaxFunction>, 'fetch'> {
+  /**
+   * 是否已确定
+   */
   confirmed?: boolean;
+  /**
+   * 副作用是否正在执行
+   */
   isFetch?: boolean;
+  /**
+   * 是否成功
+   */
   isSuccess?: boolean;
+  /**
+   * 副作用响应
+   */
   response?: any;
   ASYNC_ID?: number;
   // @IMP: 修改实现之后，需要这个字段来判断是不是弹窗
+  /**
+   * 是否Modal弹窗
+   */
   isModal?: boolean;
   // @IMP: 自定indicator
+  /**
+   * 自定义loading效果
+   */
   indicator?: React.ReactNode;
 }
 
@@ -152,6 +235,7 @@ const model = M({
       const newStatus = state.asyncStatus.map(status => {
         if (status.ASYNC_ID === ASYNC_ID) {
           isNew = false;
+          const { modalProps, formProps } = status;
           const newStatus: AsyncStatus = {
             errorMsg: null,
             successMsg: null,
@@ -161,6 +245,10 @@ const model = M({
             isFetch: true,
             confirmed: true
           };
+          // @IMP: modalProps & formProps
+          modalProps && (newStatus.modalProps = modalProps);
+          formProps && (newStatus.formProps = formProps);
+
           return newStatus;
         }
         return status;
@@ -200,8 +288,10 @@ const model = M({
                   if (typeof msg === 'function') {
                     msg = msg(response);
                   }
-                  const e: AsyncResultEventType = { type, message: msg };
-                  EventCenter.emit(ASYNC_RESULT_EVENT_NAME, e);
+                  if (msg) {
+                    const e: AsyncResultEventType = { type, message: msg };
+                    EventCenter.emit(ASYNC_RESULT_EVENT_NAME, e);
+                  }
                 }
                 // @IMP: 失败重置状态
                 if (isSuccess === false) {
@@ -228,78 +318,91 @@ const model = M({
     }
   },
   effects: {
-    async doAsync<F extends TkitAjaxFunction>(
-      { tPut }: CustomEffects,
-      action: Tction<Omit<IAsyncActionProps<F>, 'ASYNC_ID'>>
-    ) {
-      await tPut(model.actions.doAsyncStart, {
-        ASYNC_ID: 'ASYNC_ID' in action.payload ? action.payload['ASYNC_ID'] : getAsyncId(),
-        isModal: true,
-        ...action.payload
-      });
-    },
-    async doAsyncConfirmed<F extends TkitAjaxFunction>(
-      { tPut }: CustomEffects,
-      action: Tction<IAsyncConfirmedParams<F>>
-    ) {
-      const payload = confirmedPayloadCreator(action.payload);
-      await tPut(model.actions.doAsyncConfirmedStart, payload);
-      let res: any;
-      const { paramsGenerator, params, extraParams, fetch, callback, ASYNC_ID } = payload;
-      try {
-        // 参数类型处理
-        const mergedParams: any[] = [];
-        if (typeof paramsGenerator === 'function') {
-          const generatedParams = paramsGenerator(action.payload);
-          mergedParams.push.apply(
-            mergedParams,
-            Array.isArray(generatedParams) ? generatedParams : [generatedParams]
-          );
-        } else {
-          const isParamsArray = Array.isArray(params);
-          const isExtraPramssArray = Array.isArray(extraParams);
-          // 不对数组进行 merge，如有需要
-          if (isParamsArray && isExtraPramssArray) {
-            const msg = `当 fetch 拥有多个参数情形下, async 无法正确处理，请在 paramsGenerator 内处理`;
-            throw Error(msg);
-          } else if (!isParamsArray && !isExtraPramssArray) {
-            // 仅 merge object
-            mergedParams.push.apply(mergedParams, [
-              (params && typeof params === 'object') ||
-              (extraParams && typeof extraParams === 'object')
-                ? { ...params, ...extraParams }
-                : extraParams || params
-            ]);
-          } else if (isParamsArray || isExtraPramssArray) {
-            mergedParams.push.apply(mergedParams, isParamsArray ? params : extraParams);
+    doAsync: [
+      async function<F extends TkitAjaxFunction>(
+        { tPut }: CustomEffects,
+        action: Tction<Omit<IAsyncActionProps<F>, 'ASYNC_ID'>>
+      ) {
+        await tPut(model.actions.doAsyncStart, {
+          ASYNC_ID: 'ASYNC_ID' in action.payload ? action.payload['ASYNC_ID'] : getAsyncId(),
+          isModal: true,
+          ...action.payload
+        });
+      },
+      {
+        silent: true
+      }
+    ],
+    doAsyncConfirmed: [
+      async <F extends TkitAjaxFunction>(
+        { tPut }: CustomEffects,
+        action: Tction<IAsyncConfirmedParams<F>>
+      ) => {
+        const payload = confirmedPayloadCreator(action.payload);
+        await tPut(model.actions.doAsyncConfirmedStart, payload);
+        let res: any;
+        const { paramsGenerator, params, extraParams, fetch, callback, ASYNC_ID } = payload;
+        try {
+          // 参数类型处理
+          const mergedParams: any[] = [];
+          if (typeof paramsGenerator === 'function') {
+            const generatedParams = paramsGenerator(action.payload);
+            mergedParams.push.apply(
+              mergedParams,
+              Array.isArray(generatedParams) ? generatedParams : [generatedParams]
+            );
+          } else {
+            const isParamsArray = Array.isArray(params);
+            const isExtraPramssArray = Array.isArray(extraParams);
+            // 不对数组进行 merge，如有需要
+            if (isParamsArray && isExtraPramssArray) {
+              const msg = `当 fetch 拥有多个参数情形下, async 无法正确处理，请在 paramsGenerator 内处理`;
+              throw Error(msg);
+            } else if (!isParamsArray && !isExtraPramssArray) {
+              // 仅 merge object
+              mergedParams.push.apply(mergedParams, [
+                (params && typeof params === 'object') ||
+                (extraParams && typeof extraParams === 'object')
+                  ? { ...params, ...extraParams }
+                  : extraParams || params
+              ]);
+            } else if (isParamsArray || isExtraPramssArray) {
+              mergedParams.push.apply(mergedParams, isParamsArray ? params : extraParams);
+            }
           }
+          res = await fetch(...mergedParams);
+        } catch (err) {
+          res = {
+            code: 10002,
+            message: err.message
+          };
         }
-        res = await fetch(...mergedParams);
-      } catch (err) {
-        res = {
-          code: 10002,
-          message: err.message
-        };
+        if (callback) {
+          callback(res);
+        }
+        const isSuccess = !(res && res.code);
+        await tPut(model.actions.doAsyncEnd, {
+          ASYNC_ID,
+          isSuccess,
+          response: res
+        });
+      },
+      {
+        silent: true
       }
-      if (callback) {
-        callback(res);
-      }
-      const isSuccess = !(res && res.code);
-      await tPut(model.actions.doAsyncEnd, {
-        ASYNC_ID,
-        isSuccess,
-        response: res
-      });
-    },
-    async doAsyncCancel({ tPut }: CustomEffects, action: Tction<number>) {
-      await tPut(model.actions.doAsyncEnd, {
-        ASYNC_ID: action.payload,
-        successMsg: false
-      });
-    }
+    ],
+    doAsyncCancel: [
+      async ({ tPut }: CustomEffects, action: Tction<number>) => {
+        await tPut(model.actions.doAsyncEnd, {
+          ASYNC_ID: action.payload,
+          successMsg: false
+        });
+      },
+      { silent: true }
+    ]
   }
 });
-
+// @IMP: 类型推导遇到泛型不好使了，必须手写类型
 export interface AsyncModelActions {
   doAsync: <F extends TkitAjaxFunction>(payload: Omit<IAsyncActionProps<F>, 'ASYNC_ID'>) => any;
   doAsyncConfirmed: <F extends TkitAjaxFunction>(payload: IAsyncConfirmedParams<F>) => any;

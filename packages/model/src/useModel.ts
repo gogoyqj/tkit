@@ -9,17 +9,34 @@ import createModel, {
   Tction,
   putWrapper,
   effectWrapper,
-  exeGenerator
+  EffectOptions
 } from './createModel';
 
 declare global {
   interface Window {
+    /**
+     * 局部Model调试工具函数
+     */
     __TKIT_USE_MODEL_LOGGER__: (...args: any) => any;
   }
 }
 
+/**
+ * Model工厂
+ * @param model
+ * @param model.namespace 命令空间
+ * @param model.state 初始状态
+ * @param model.reducers 推导reducers和同步actions
+ * @param model.effects 副作用，推导异步actions
+ */
 export function Model<M, R extends Reducers<M>, E extends LocalEffects>(model: {
+  /**
+   * 命令空间
+   */
   namespace: string;
+  /**
+   * 初始状态
+   */
   state: M;
   reducers: R;
   effects: E;
@@ -28,6 +45,8 @@ export function Model<M, R extends Reducers<M>, E extends LocalEffects>(model: {
 }
 
 export const M = Model;
+
+const localOpts = { local: true };
 
 // 层级嵌套的类型推断不好使
 export function bindDispatchToAction<A, E, M extends { actions: A; effects: E }>(
@@ -47,15 +66,19 @@ export function bindDispatchToAction<A, E, M extends { actions: A; effects: E }>
   const effects = { tPut: wrappedPut, tCall, namespace: model['namespace'] };
   return Object.keys(actions).reduce((newActions, actionName) => {
     const originAction = actions[actionName];
-    const effect = modelEffects[actionName]
-      ? effectWrapper(modelEffects[actionName], effects)
+    const originEffect = modelEffects[actionName];
+    const opts: EffectOptions = Array.isArray(originEffect)
+      ? { ...originEffect[1], ...localOpts }
+      : localOpts;
+    const effect = originEffect
+      ? effectWrapper(Array.isArray(originEffect) ? originEffect[0] : originEffect, effects, opts)
       : undefined;
     newActions[actionName] = (...args: any) => {
       const action = originAction(...args);
       dispatch(action);
-      if (effect) {
-        exeGenerator(effect, action);
-      }
+      return effect && effect(action);
+      // @IMP: 移除副作用执行器
+      // exeGenerator(effect, action);
     };
     return newActions;
   }, {}) as typeof actions;

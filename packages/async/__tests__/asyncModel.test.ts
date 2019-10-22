@@ -96,7 +96,11 @@ describe('tkit-async/asyncModel works ok', () => {
   it('effects should work ok', async () => {
     // @IMP: cheater
     if (effects) {
-      const { doAsync, doAsyncCancel, doAsyncConfirmed } = effects;
+      const {
+        doAsync: [doAsync],
+        doAsyncCancel: [doAsyncCancel],
+        doAsyncConfirmed: [doAsyncConfirmed]
+      } = effects;
       let payloads: any[] = [];
       const tPut = jest.fn((action: any, payload: any) => {
         payload = { ...payload };

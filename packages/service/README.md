@@ -30,6 +30,9 @@ edit `json2service.json`，也可用 `xxx.js`，然后配置 `-c xxx.js`
 | guardConfig      | mode                     | 缺省, safe, strict                                                                                                                                 |
 |                  | methodUrl2OperationIdMap | 对象，http method + url => operationId 映射，如 `{"get /api/xxx/xxx": "operationId"}`                                                              |
 |                  | badParamsReg             | 非法参数格式校验正则，默认 `/[^a-z0-9_.[]$]/gi`，仅配置文件是 `*.js` 可用                                                                          |
+|                  | unstableTagsReg          | `3.0.13+`，不符合规范 Tag 正则，默认 `/^[a-z-0-9_$A-Z]+-controller$/g`，仅配置文件是 `*.js` 可用                                                   |
+|                  | validTagsReg             | `3.0.13+`，检测 Tag 是否全英文，默认 `/^[a-z-0-9_$]+$/gi`，仅配置文件是 `*.js` 可用                                                                |
+|                  | validDefinitionReg       | `3.0.13+`，DTO 命名是否符合规范正则，默认 `/^[a-z-0-9_$«»,]+$/gi`，仅配置文件是 `*.js` 可用                                                        |
 |                  | prefixReg                | 生成 `url + Using + http method` 时，需移除 url 前缀正则，默认是 `/^(\/)?api\//g` ，仅配置文件是 `*.js` 可用                                       |
 
 ```json

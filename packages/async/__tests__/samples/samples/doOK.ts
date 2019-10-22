@@ -1,8 +1,9 @@
 import { doAsync, doAsyncConfirmed } from '@src/index';
 import { loadData, loadDataWithMoreParams } from './consts';
 
-export function tester() {
-  doAsync({
+export async function tester() {
+  // @IMP: 新版返回promise
+  const { result } = await doAsync({
     fetch: loadData,
     params: 1
   });
@@ -23,7 +24,8 @@ export function tester() {
     fetch: loadData,
     paramsGenerator: () => [1]
   });
-  doAsyncConfirmed({
+  // @IMP: 新版返回promise
+  const { code } = await doAsyncConfirmed({
     fetch: loadDataWithMoreParams,
     paramsGenerator: () => [1, '2']
   });

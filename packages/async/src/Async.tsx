@@ -10,9 +10,21 @@ import {
 } from './consts';
 
 export interface AsyncProps {
-  loading?: React.ComponentType<{ status: AsyncStatus }>; // 加载效果组件
+  /**
+   * 加载效果组件
+   */
+  loading?: React.ComponentType<{ status: AsyncStatus }>;
+  /**
+   * 显示副作用提示信息的函数
+   */
   tips?: (e: AsyncResultEventType) => any;
+  /**
+   * Model弹窗组件，兼容antd Model
+   */
   modal: React.ComponentType<AsyncModalProps>;
+  /**
+   * Form组件
+   */
   form: React.ComponentType<AsyncFormProps>;
 }
 

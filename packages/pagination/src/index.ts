@@ -4,27 +4,59 @@ import { TkitAjaxFunction } from 'tkit-ajax';
 import { TkitUtils } from 'tkit-types';
 
 export interface TkitPagenationParams {
-  // 标准参数
+  /**
+   * 当前页码，同pageNum
+   */
   current: number;
+  /**
+   * 当前页码，同current
+   */
   pageNum: number;
+  /**
+   * 每页显示条数
+   */
   pageSize: number;
   // 非标准参数
   [str: string]: any;
   [num: number]: any;
 }
 export interface TkitPagenationStateBase<D, P extends Partial<TkitPagenationParams>> {
+  /**
+   * 当前页数据列表
+   */
   pageData: D[];
+  /**
+   * 总条数
+   */
   total: number;
+  /**
+   * 适配到antd Table组件的rowKey，默认是id
+   */
   rowKey?: string | number;
+  /**
+   * 适配到antd Table组件的当前选中的rowKey
+   */
   selectedRowKeys: (string | number)[];
+  /**
+   * 是否正在加载，同isfetch
+   */
   loading: boolean; //  for antd
+  /**
+   * 是否正在加载，同loading
+   */
   isfetch: boolean;
+  /**
+   * 错误信息
+   */
   fetchError:
     | boolean
     | {
         code?: number;
         message?: string | number | any;
       };
+  /**
+   * 参数
+   */
   params: P;
 }
 
@@ -32,6 +64,14 @@ export type TkitGetListItemType<L> = L extends { result: { list: (infer I)[] } }
 export type TkitListParams = Partial<TkitPagenationParams>;
 const DEFAULY_ROW_KEY = 'id';
 
+/**
+ * 翻页组件
+ * @param key ReduxStore Key
+ * @param params 自定义扩展参数
+ * @param fetch 拉取数据的函数
+ * @param [rowKey] 适配antd Table组件的rowKey，默认为id
+ * @param [feature] 所属模板项目的模块
+ */
 export function pagination<F extends TkitAjaxFunction, K extends string, P extends TkitListParams>(
   key: K,
   params: P,
@@ -73,8 +113,8 @@ export function pagination<F extends TkitAjaxFunction, K extends string, P exten
     },
     rowKey, // 默认是 id
     selectedRowKeys: [], // 列表选中
-    loading: true,
-    isfetch: true, // 加载loader显示与隐藏
+    loading: false,
+    isfetch: false, // 加载loader显示与隐藏
     fetchError: false // 失败后弹窗
   };
   const initialState: Store = [key].reduce(

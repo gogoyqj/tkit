@@ -1,6 +1,6 @@
 {
   "name": "tkit-service",
-  "version": "3.0.8",
+  "version": "3.0.13",
   "description": "swagger or yapi mock to typescript services and models",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",

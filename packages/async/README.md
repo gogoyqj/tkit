@@ -32,3 +32,7 @@ import Async from 'tkit-async';
 ```ts
 import { doAsync, doAsyncConfirmed } from 'tkit-async';
 ```
+
+#### 变更
+
+自`3.0.4`起，`doAsync, doAsyncConfirmed`返回`Promise<fetch函数返回值>`
