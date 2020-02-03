@@ -1,9 +1,9 @@
-import { asyncModel, IAsyncState } from '@src/asyncModel';
+import { asyncModel, IAsyncState } from 'src/asyncModel';
 import { CustomEffects } from 'tkit-model';
 
 const {
   __model: {
-    reducers: { doAsyncStart, doAsyncConfirmedStart, doAsyncEnd },
+    reducers: { doAsyncStart, doAsyncConfirmedStart, doAsyncEnd, doClearModal },
     effects
   }
 } = asyncModel;
@@ -33,6 +33,7 @@ describe('tkit-async/asyncModel works ok', () => {
     const state = getInitialState();
     let newState = doAsyncStart(state, {
       payload: {
+        isModal: true,
         ASYNC_ID: 1
       }
     });
@@ -61,36 +62,34 @@ describe('tkit-async/asyncModel works ok', () => {
     expect(newState.asyncStatus[1].isFetch).toEqual(true);
     expect(newState).toMatchSnapshot('doAsyncConfirmedStart 2');
 
-    // @IMP: 出错的情况不移除
+    // IMP: doAsyncConfirmed 出错移除
     newState = doAsyncEnd(newState, {
       payload: {
         ASYNC_ID: 2,
         isSuccess: false
       }
     });
-    expect(newState.asyncStatus).toHaveLength(2);
-    expect(newState.asyncStatus[1].confirmed).toEqual(false);
-    expect(newState.asyncStatus[1].isFetch).toEqual(false);
-    expect(newState).toMatchSnapshot('doAsyncEnd');
+    expect(newState.asyncStatus).toHaveLength(1);
 
+    // doAsync 出错不移除
     newState = doAsyncEnd(newState, {
       payload: {
-        ASYNC_ID: 2,
-        isSuccess: true
+        ASYNC_ID: 1,
+        isSuccess: false
       }
     });
     expect(newState.asyncStatus).toHaveLength(1);
-    expect(newState.asyncStatus[0].confirmed).toEqual(true);
-    expect(newState.asyncStatus[0].isFetch).toEqual(true);
-    expect(newState).toMatchSnapshot('doAsyncEnd 2');
 
-    // 清空
+    // 成功不移除
     newState = doAsyncEnd(newState, {
       payload: {
         ASYNC_ID: 1,
         isSuccess: true
       }
     });
+    expect(newState.asyncStatus).toHaveLength(1);
+
+    newState = doClearModal(newState);
     expect(newState.asyncStatus).toHaveLength(0);
   });
   it('effects should work ok', async () => {

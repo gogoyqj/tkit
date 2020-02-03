@@ -1,5 +1,5 @@
 import React from 'react';
-import Async from '@src/Async';
+import Async from 'src/Async';
 import { FormFaker, Loading, Modal, tips } from './consts';
 
 export default function Example() {

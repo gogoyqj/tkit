@@ -32,6 +32,14 @@ export const handle = (
   type: TemplateType,
   options: OptionType = {}
 ) => {
+  /** model 是否集成 immer & namespace 隔离 */
+  let modern = false;
+  // 适配 MM & CM
+  if (type.toLowerCase() === 'mm') {
+    type = 'Model';
+    modern = true;
+  }
+
   let templateType = _.upperFirst(type); // Abb like
   const templates: Template[] = [];
 
@@ -56,7 +64,7 @@ export const handle = (
   const reducerName = `apply${pascalName}`;
   const sagaName = `saga${pascalName}`; // ?
   const selectorName = `get${pascalName}`;
-  let presenterName = `SFC${pascalName}`;
+  let presenterName = `${pascalName}`;
   let componentName = pascalName;
   const constsName = _.upperSnakeCase(pascalName);
   const featureSagaName = `${camelCaseFeature}Saga`;
@@ -278,7 +286,7 @@ export const handle = (
                 declarations: [
                   {
                     name: 'initialState',
-                    initializer: `...${camelName}State`
+                    initializer: modern ? `${camelName}: ${camelName}State` : `...${camelName}State`
                   }
                 ]
               }
@@ -323,7 +331,7 @@ export const handle = (
         fsX.ensureFileSync(indexFile);
       }
       // stateless component
-      presenterName = fileName = `SFC${pascalName}${isPage ? 'Page' : ''}`;
+      presenterName = fileName = `${pascalName}${isPage ? 'Page' : ''}`;
       fileName = `${fileName}${h5}`;
       exportCode = {
         [indexFile]: `export { default as ${presenterName} } from './${fileName}'` + ';\n'
@@ -365,6 +373,8 @@ export const handle = (
     wrap,
     hooks,
     local,
+
+    modern,
 
     name,
     cssClassName,

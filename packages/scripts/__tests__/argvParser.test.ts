@@ -1,4 +1,4 @@
-import argvParser from '@src/argvParser';
+import argvParser from 'src/argvParser';
 
 describe('scripts/argvParser', () => {
   it('should argvParser works ok', () => {

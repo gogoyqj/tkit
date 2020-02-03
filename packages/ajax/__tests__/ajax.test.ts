@@ -1,8 +1,9 @@
 import http from 'http';
 import * as qs from 'qs'; // stringify
+import originAxios from 'axios';
 
-import axios from '@src/axios';
-import ajaxV2 from '@src/new-ajax';
+import axios from 'src/axios';
+import ajaxV2 from 'src/new-ajax';
 import { EventCenter } from 'tkit-event/lib/event';
 
 const Error401 = { status: 401, message: 'Unauthorized' };
@@ -28,6 +29,7 @@ describe('utils/WrappedFetch work ok', () => {
       }
     })
     .listen(4444);
+  const cancelToken = new originAxios.CancelToken(() => {});
 
   beforeAll(() => {
     EventCenter.on('common.user.status', statusError);
@@ -62,7 +64,8 @@ describe('utils/WrappedFetch work ok', () => {
       method: 'GET'.toLocaleLowerCase(),
       url: api,
       params: params401,
-      headers: {}
+      headers: {},
+      cancelToken
     });
 
     res = await ajaxV2.ajax({
@@ -75,7 +78,8 @@ describe('utils/WrappedFetch work ok', () => {
       method: 'GET'.toLocaleLowerCase(),
       url: api,
       params,
-      headers: {}
+      headers: {},
+      cancelToken
     });
   });
 
@@ -94,7 +98,8 @@ describe('utils/WrappedFetch work ok', () => {
       data: params,
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      cancelToken
     });
 
     res = await ajaxV2.ajax({
@@ -111,7 +116,8 @@ describe('utils/WrappedFetch work ok', () => {
       data: params,
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      cancelToken
     });
   });
 
@@ -130,7 +136,8 @@ describe('utils/WrappedFetch work ok', () => {
       data: qs.stringify(params),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+      cancelToken
     });
 
     res = await ajaxV2.ajax({
@@ -147,7 +154,8 @@ describe('utils/WrappedFetch work ok', () => {
       data: qs.stringify(params),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+      cancelToken
     });
   });
 });

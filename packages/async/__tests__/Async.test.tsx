@@ -6,8 +6,9 @@ import Async, {
   AsyncModalProps,
   doAsync,
   doAsyncConfirmed,
+  doClearModal,
   NewAsyncParams
-} from '@src/index';
+} from 'src/index';
 import { FormFaker } from './Example';
 
 describe('tkit-async/useAsync works ok', () => {
@@ -69,21 +70,17 @@ describe('tkit-async/useAsync works ok', () => {
               paramsGenerator: paramsFun
             }).then(() => 0, catchCancel)
           }
-          onMouseUp={
-            () =>
-              doAsync({
-                formProps: {},
-                callback,
-                onSuccess: success,
-                onError: fail,
-                modalProps: {
-                  className: 'm2'
-                },
-                fetch: effect
-                /**
-                 * @TODO:
-                 */
-              }).then(() => 0, catchCancel) // @IMP: 捕获错误
+          onMouseUp={() =>
+            doAsync({
+              formProps: {},
+              callback,
+              onSuccess: success,
+              onError: fail,
+              modalProps: {
+                className: 'm2'
+              },
+              fetch: effect
+            }).then(() => 0, catchCancel)
           }
           onMouseDown={() =>
             doAsyncConfirmed({
@@ -153,7 +150,23 @@ describe('tkit-async/useAsync works ok', () => {
 
     // onCancel
     {
-      const cancelButtons = container.querySelectorAll('.cancel');
+      act(() => {
+        doClearModal();
+      });
+      let cancelButtons: NodeListOf<HTMLElementTagNameMap['button']> = container.querySelectorAll(
+        '.cancel'
+      );
+      await new Promise(rs => {
+        const checker = () => {
+          if (cancelButtons.length > 1) {
+            setTimeout(checker, 200);
+          } else {
+            rs();
+          }
+          cancelButtons = container.querySelectorAll('.cancel');
+        };
+        checker();
+      });
       expect(cancelButtons.length).toEqual(1);
       act(() => {
         cancelButtons[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));

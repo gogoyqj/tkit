@@ -30,9 +30,10 @@ export const config: Partial<InitialOptions> = (module.exports = {
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|ts|tsx)$'],
   moduleNameMapper: {
+    '^src(.*)$': '<rootDir>/src/$1',
     '@ajax': '<rootDir>/node_modules/tkit-ajax',
-    '@src/utils/utils': '<rootDir>/src/utils/utils.d.ts',
-    '@src(.*)$': '<rootDir>/src/$1',
+    'src/utils/utils': '<rootDir>/src/utils/utils.d.ts',
+    'src(.*)$': '<rootDir>/src/$1',
     '@features(.*)$': '<rootDir>/src/features/$1',
     '@AuthContext': '<rootDir>/src/features/home/components/AuthContext',
     '^react-native$': 'react-native-web'

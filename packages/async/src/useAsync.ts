@@ -1,3 +1,10 @@
+/**
+ * @author: yangqianjun
+ * @file: 私有hooks，请勿使用
+ * @Date: 2019-09-10 16:48:13
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-06 18:37:27
+ */
 import { useCallback } from 'react';
 import { useModel } from 'tkit-model';
 import {
@@ -13,10 +20,11 @@ export interface UseAsyncConfig {
   renderForm: (props: AsyncFormProps) => React.ReactChild;
 }
 
-// @IMP: 数组类型的痛；私有
+/** 私有hooks，请勿使用 */
 export function useAsync(
   config: UseAsyncConfig
 ): [IAsyncState['asyncStatus'], typeof asyncModel.actions] {
+  // @IMP: 数组类型的痛
   const [state, actions] = useModel(asyncModel);
   const asyncFormater = useCallback(
     <P extends Omit<IAsyncActionProps<any>, 'ASYNC_ID'>>(payload: P): P => {
@@ -26,7 +34,7 @@ export function useAsync(
       const newProps = formProps
         ? {
             ...modalProps,
-            className: `tkit-async-modal ${modalProps ? modalProps.className : ''}`,
+            className: `tkit-async-modal ${(modalProps && modalProps.className) || ''}`,
             content: config.renderForm({
               ...formProps,
               getForm: f => {
@@ -46,11 +54,17 @@ export function useAsync(
       if (newProps) {
         const { onCancel, onOk } = newProps;
         newProps.onCancel = async () => {
-          if (onCancel) {
-            await onCancel();
+          try {
+            if (onCancel) {
+              await onCancel();
+            }
+            await Promise.all([
+              actions.doAsyncCancel(ASYNC_ID || -1),
+              handleCancel && handleCancel()
+            ]);
+          } catch (e) {
+            // do nothing
           }
-          await actions.doAsyncCancel(ASYNC_ID || -1);
-          await (handleCancel && handleCancel());
         };
         // @IMP: Modal的关闭不再受onOk控制
         newProps.onOk = async () => {

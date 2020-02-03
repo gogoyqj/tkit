@@ -1,6 +1,6 @@
 {
   "name": "tkit-model",
-  "version": "3.0.6",
+  "version": "3.2.4",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -19,9 +19,10 @@
   },
   "scripts": {
     "test": "jest --all --env=jsdom",
-    "build": "rm -rf lib && tsc --project tsconfig.prod.json"
+    "build": "rm -r ./lib;tsc --project tsconfig.prod.json"
   },
   "peerDependencies": {
+    "tkit-tkit": ">=3.1.0",
     "react": ">=16.8.3",
     "react-dom": ">=16.8.3"
   },

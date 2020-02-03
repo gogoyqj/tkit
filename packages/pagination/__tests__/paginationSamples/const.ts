@@ -1,4 +1,4 @@
-import { pagination } from '@src/index';
+import { pagination } from 'src/index';
 
 export const pageData = [{ id: 2, name: '' }, { id: 3, name: 'name' }];
 export const TestData = { code: 0, result: { list: pageData } };

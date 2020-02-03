@@ -1,3 +1,11 @@
+/**
+ * @file: antd 黄色配色，可通过 config/colors/yellow.js 覆盖
+ * @author: yangqianjun
+ * @Date: 2019-07-26 13:28:29
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 16:56:38
+ */
+
 module.exports = {
   'info-color': '#FF8000',
   'primary-color': '#FF8000',

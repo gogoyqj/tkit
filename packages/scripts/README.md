@@ -1,6 +1,16 @@
+<!--
+ * @file: description
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 17:58:36
+ -->
+
 ---
+
 name: scripts
 menu: '开发/测试/构建'
+
 ---
 
 # `npm i -D tkit-scripts`
@@ -31,10 +41,41 @@ menu: '开发/测试/构建'
 
 ### 代理设置
 
+#### config/proxy.js
+
+自版本 @3.1.5 起，支持通过配置 `config/proxy.js` 配置代理，该代理会覆盖 `env.*` 文件配置的代理
+
+```js
+module.exports = [
+  {
+    context: ['/auth', '/api'],
+    target: 'http://localhost:3000',
+    headers: {
+      Cookie: '' // XXXX
+    }
+  }
+];
+```
+
+或者
+
+```js
+module.exports = {
+  '/context-path/api': {}
+};
+```
+
+[更多配置](https://webpack.js.org/configuration/dev-server/#devserverproxy)
+
+#### .env
+
 > .env.development 或者 .env.development.local
+
+自 @3.1.5 起 `PROXY_TARGET` 和 `PROXY_COOKIE` 可搭配使用
 
 ```env
 PROXY_TARGET=http://mock.xyz.com/api/
+PROXY_COOKIE=xxx
 ```
 
 > Tips: 由于新版 react dev utils 只支持一个 proxy 配置，建议使用 `charles` 等代理工具做二次代理

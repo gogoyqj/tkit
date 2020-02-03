@@ -1,0 +1,16 @@
+---
+name: event-center
+menu: 'utils'
+route: /tkit/event-center
+---
+
+# `npm i tkit-event-center`
+
+事件中心，自 `tkit-event` 拆分出来
+
+```ts
+import EventCenter from 'tkit-event';
+
+EventCenter.on('e', () => {});
+EventCenter.emit('e', {});
+```

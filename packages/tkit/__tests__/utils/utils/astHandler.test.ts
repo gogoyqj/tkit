@@ -1,7 +1,7 @@
 import path from 'path';
 import { VariableDeclarationKind } from 'ts-morph';
 import fs from 'fs-extra';
-import { createProject, astHandler, handleVars, handleImport } from '@src/utils/astHandler';
+import { createProject, astHandler, handleVars, handleImport } from 'src/utils/astHandler';
 
 describe('utils/astHandler', () => {
   const tmp = 'tmp';

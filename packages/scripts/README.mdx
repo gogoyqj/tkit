@@ -4,6 +4,93 @@ menu: '开发/测试/构建'
 route: /tkit/scripts
 ---
 
-import Readme from './README.md';
+# `npm i -D tkit-scripts`
 
-<Readme />
+> dev、build 脚本包
+
+## Usage
+
+### 开发构建
+
+> package.json
+
+```json
+{
+  ...,
+  "scripts": {
+    "start": "nodemon node_modules/tkit-scripts/lib/start.js",
+    "build": "node node_modules/tkit-scripts/lib/build.js",
+    ...
+  },
+  ...
+}
+```
+
+### 模板变量 - index.html
+
+> 所有 `REACT_APP_` 或者 `WEBPACK_` 开头的变量以及 PUBLIC_URL 都会通过 `htmlWebpackPlugin.options` 暴露
+
+### 代理设置
+
+#### config/proxy.js
+
+自版本 @3.1.5 起，支持通过配置 `config/proxy.js` 配置代理，该代理会覆盖 `env.*` 文件配置的代理
+
+```js
+module.exports = [
+  {
+    context: ['/auth', '/api'],
+    target: 'http://localhost:3000',
+    headers: {
+      Cookie: '' // XXXX
+    }
+  }
+];
+```
+
+或者
+
+```js
+module.exports = {
+  '/context-path/api': {}
+};
+```
+
+[更多配置](https://webpack.js.org/configuration/dev-server/#devserverproxy)
+
+#### .env
+
+> .env.development 或者 .env.development.local
+
+自 @3.1.5 起 `PROXY_TARGET` 和 `PROXY_COOKIE` 可搭配使用
+
+```env
+PROXY_TARGET=http://mock.xyz.com/api/
+PROXY_COOKIE=xxx
+```
+
+> Tips: 由于新版 react dev utils 只支持一个 proxy 配置，建议使用 `charles` 等代理工具做二次代理
+
+### 修改手动 h5 拆包设置 - 如默认配置不能满足需求
+
+> config/h5-alias.js
+
+```js
+const h5Alias = require('tkit-scripts/config/h5-alias');
+
+module.exports = {
+  ...h5Alias
+};
+```
+
+> 默认配置 tkit-scripts/config/h5-alias.js
+
+```js
+module.exports = {
+  './common/routeConfig': './common/h5/routeConfig',
+  './rootReducer': './h5/rootReducer',
+  'src/common/rootReducer': 'src/common/h5/rootReducer',
+  './rootSaga': './h5/rootSaga',
+  './styles/index.less': './styles/h5.less'
+};
+```

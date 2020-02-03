@@ -32,7 +32,7 @@ async function download(url: string) {
 export default async function serve(
   url: string,
   yapiConfig: Json2Service['yapiConfig']
-): Promise<{ code: number; message?: string; result?: any }> {
+): Promise<{ code: number; message?: string; result?: string }> {
   const yapiJSON = url.match(/^http/g) ? await download(url) : { code: 0, result: require(url) };
   let swagger: {};
   try {

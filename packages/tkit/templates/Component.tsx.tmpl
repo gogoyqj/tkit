@@ -4,7 +4,7 @@ import { connect } from 'react-redux';<% } %><% if (url) {%>
 import { RouteComponentProps } from 'react-router-dom';
 <%} %>
 <% if (connect) { %>
-import { IRootState } from '@src/types';
+import { IRootState } from 'src/types';
 
 import actions from '<%= components || wrap ? '' : './' %><%= components ? '../' : '' %><%= wrap ? '../' : '' %>redux/actions';
 <% } %>

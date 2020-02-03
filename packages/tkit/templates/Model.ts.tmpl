@@ -1,24 +1,25 @@
 <% if (local) { %>
-import { Tction, M } from 'tkit-model';
+import { Tction, ${modern ? 'MM' : 'M'} } from 'tkit-model';
 import { api } from '@services';
 
-const Model = M({
+const Model = ${modern ? 'MM' : 'M'}({
   state: {},
   namespace: '${camelName}',
   reducers: {
-    /**
-      * doSomething
-      */
+    /** doSomething */
+    <% if (modern) { %>
+    doSomething: (state, action: Tction<{}>) => {
+    }
+    <% } else { %>
     doSomething: (state, action: Tction<{}>): typeof state => {
       return {
         ...state
       };
     }
+    <% } %>
   },
   effects: {
-    /**
-      * doSomethingAsyc
-      */
+    /** doSomethingAsyc */
     doSomethingAsyc: async ({ tPut }) => {
       const res = await api.xxx();
       tPut(Model.actions.doSomething, {});
@@ -32,6 +33,35 @@ const Model = M({
 export default Model;
 
 <% } else {%>
+<% if (modern) { %>
+import { CM, Tction } from 'tkit-model';
+import { TkitUtils as Utils } from 'tkit-types';
+import { api } from '@services';
+
+export interface State {
+}
+
+export const ${camelName}State: State = {
+}
+
+const model = CM({
+  state: ${camelName}State,
+  namespace: '${camelName}',
+  reducers: {
+    /** doSomething */
+    doSomething: (state, action: Tction<{}>) => {
+    }
+  },
+  effects: {
+    /** doSomethingAsync */
+    *doSomethingAsync({ namespace, put, tPut, tCall }, action: Tction<{}>): Iterator<{}<%= isModernTS ? ', any, any' : '' %>> {
+      // yield put({ type: `$\{namespace}/doLogin`, payload: { username: '' } });
+      // const data: Utils.GetROA<typeof api.getTest> = yield tCall(api.getTest, 2);
+      // yield tPut(model.actions.doLogin, { username: '' });
+    }
+  }
+});
+<% } else { %>
 import createModel, { Tction } from 'tkit-model';
 import { TkitUtils as Utils } from 'tkit-types';
 import { api } from '@services';
@@ -49,9 +79,7 @@ const model = createModel({
   state: ${camelName}State,
   namespace: '${camelName}',
   reducers: {
-    /**
-      * doSomething
-      */
+    /** doSomething */
     doSomething: (state, action: Tction<{}>): typeof state => {
       return {
         ...state
@@ -59,16 +87,15 @@ const model = createModel({
     }
   },
   effects: {
-    /**
-      * doSomethingAsync
-      */
+    /** doSomethingAsync */
     *doSomethingAsync({ namespace, put, tPut, tCall }, action: Tction<{}>): Iterator<{}<%= isModernTS ? ', any, any' : '' %>> {
       // yield put({ type: `$\{namespace}/doLogin`, payload: { username: '' } });
-      // const data: Utils.GetROA<api.getTest> = yield tCall(api.getTest, 2);
+      // const data: Utils.GetROA<typeof api.getTest> = yield tCall(api.getTest, 2);
       // yield tPut(model.actions.doLogin, { username: '' });
     }
   }
 });
+<% }%>
 
 /**
  * @description 全局Model ${camelName} 挂载到 redux 上

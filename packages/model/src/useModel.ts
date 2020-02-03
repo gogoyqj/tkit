@@ -1,15 +1,18 @@
 /**
  * @description 基于 React Hooks 封装的 model，适用于局部状态
  */
-import { useReducer, useMemo } from 'react';
+import { useReducer, useMemo, useEffect, useRef } from 'react';
+import { TkitUtils } from 'tkit-types';
 import createModel, {
   Reducers,
+  CMReducers,
   LocalEffects,
   tCall,
   Tction,
   putWrapper,
   effectWrapper,
-  EffectOptions
+  EffectOptions,
+  ModernType
 } from './createModel';
 
 declare global {
@@ -30,13 +33,9 @@ declare global {
  * @param model.effects 副作用，推导异步actions
  */
 export function Model<M, R extends Reducers<M>, E extends LocalEffects>(model: {
-  /**
-   * 命令空间
-   */
+  /** 命令空间，区分日志使用 */
   namespace: string;
-  /**
-   * 初始状态
-   */
+  /** 初始状态 */
   state: M;
   reducers: R;
   effects: E;
@@ -44,12 +43,33 @@ export function Model<M, R extends Reducers<M>, E extends LocalEffects>(model: {
   return createModel(model);
 }
 
+export function MM<M, R extends CMReducers<M>, E extends LocalEffects>(model: {
+  /** 命令空间，区分日志使用 */
+  namespace: string;
+  /** 初始状态 */
+  state: M;
+  reducers: R;
+  effects: E;
+}) {
+  // cheat
+  return createModel<
+    M,
+    {
+      [doSomething in keyof R]: (
+        state: M,
+        action: TkitUtils.GetArgumentsType<R[doSomething]>[1]
+      ) => M;
+    },
+    E
+  >({ ...model, m: ModernType.HookModern } as any);
+}
+
 export const M = Model;
 
 const localOpts = { local: true };
 
 // 层级嵌套的类型推断不好使
-export function bindDispatchToAction<A, E, M extends { actions: A; effects: E }>(
+export function bindDispatchToAction<A, E, M extends { actions: A; effects: E; TYPES: any }>(
   actions: A,
   dispatch: ReturnType<typeof useReducer>[1],
   model: M
@@ -71,7 +91,12 @@ export function bindDispatchToAction<A, E, M extends { actions: A; effects: E }>
       ? { ...originEffect[1], ...localOpts }
       : localOpts;
     const effect = originEffect
-      ? effectWrapper(Array.isArray(originEffect) ? originEffect[0] : originEffect, effects, opts)
+      ? effectWrapper(
+          Array.isArray(originEffect) ? originEffect[0] : originEffect,
+          effects,
+          model.TYPES[actionName],
+          opts
+        )
       : undefined;
     newActions[actionName] = (...args: any) => {
       const action = originAction(...args);
@@ -106,15 +131,39 @@ const commonReducer: (reducer: <M>(prevState: M, action: Tction<any>) => M) => a
     : reducer => reducer;
 
 export const useModel = <
-  M extends { reducers: any; actions: any; state: any; sagas: any; effects: any }
+  M extends {
+    reducers: any;
+    actions: any;
+    state: any;
+    sagas: any;
+    effects: any;
+    TYPES: any;
+    namespace: string;
+  }
 >(
   model: M,
   initialState: M['state'] = model['state']
 ) => {
   const [store, dispatch] = useReducer(commonReducer(model.reducers), initialState);
+  const isNotUnmounted = useRef(true);
+  // @IMP: 解除 dispatch 响应，避免内存泄露
+  useEffect(() => {
+    return () => {
+      isNotUnmounted.current = false;
+    };
+  }, []);
   return [
     store,
-    useMemo(() => bindDispatchToAction(model.actions, dispatch, model), [model, dispatch])
+    useMemo(
+      () =>
+        bindDispatchToAction(
+          model.actions,
+          // eslint-disable-next-line prefer-spread
+          (...args) => isNotUnmounted.current && dispatch.apply(null, args),
+          model
+        ),
+      [model, dispatch]
+    )
   ] as [M extends { state: any } ? M['state'] : {}, M extends { actions: any } ? M['actions'] : {}];
 };
 export * from './createModel';

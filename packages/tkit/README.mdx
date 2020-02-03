@@ -4,6 +4,170 @@ menu: '开发/测试/构建'
 route: /tkit/tkit
 ---
 
-import Readme from './README.md';
+# `npm i tkit-tkit`
 
-<Readme />
+脚手架 CLI
+
+## 1. Usage
+
+## - 1.1 创建组件
+
+## - 1.1.① 创建 Component
+
+命名遵循驼峰格式，不能使用 default, index
+
+```shell
+# 创建组件 feature/components/componentName
+./node_modules/.bin/tkit-kit add component feature//componentName
+
+# 创建组件 feature/h5Components/componentName
+./node_modules/.bin/tkit-kit add component feature/h5/componentName
+
+# 创建组件 feature/componentName
+./node_modules/.bin/tkit-kit add component feature/componentName
+
+-c : connect redux store
+-u : 路由页面，存在 this.props.match.params，组件名请使用 XXXPage
+-p : pureComponent
+-f : 慎用，覆盖已有
+-w : 将组件 ts 与 less 文件包在同一个文件里，默认 true
+```
+
+## - 1.1.② 创建无状态组件，Presenter、SFC
+
+命名遵循驼峰格式，不能使用 default, index，自版本 `3.1.0` 起，不再自动添加 SFC 前缀
+
+```shell
+# 创建组件 feature/components/componentName
+./node_modules/.bin/tkit-kit add presenter feature//componentName
+
+# 创建组件 feature/h5Components/componentName
+./node_modules/.bin/tkit-kit add presenter feature/h5/componentName
+
+# 创建组件 feature/componentName
+./node_modules/.bin/tkit-kit add presenter feature/presenterName
+
+-c : connect redux store
+-u : 路由页面，存在 props.match.params，组件名请使用 XXXPage
+-f : 慎用，覆盖已有
+-w : 将组件 ts 与 less 文件包在同一个文件里，默认 false
+-k, --hooks : 创建 hooks，默认 false
+```
+
+## - 1.2 redux 相关
+
+## - 1.2.① 创建 model
+
+命名遵循驼峰格式: xxModel
+
+## - 1.2.①.a `3.1.0` 以后版本
+
+创建集成 `immer` & `redux store namespace` 自动隔离的 model
+
+```shell
+  # 集成 immer & namespace 隔离的全局 model
+  ./node_modules/.bin/tkit-kit add mm feature/myModel
+  # 集成 immer 的 local model
+  ./node_modules/.bin/tkit-kit add mm feature/myModel -l
+```
+
+[见 tkit-model](./model#--30①-cm)
+
+## - 1.2.①.b `3.1.0` 之前版本
+
+```
+  ./node_modules/.bin/tkit-kit add model feature/myModel
+```
+
+[见 tkit-model](./model#--33-createmodel)
+
+## - 1.2.①.c M && MM & useModel
+
+[见 tkit-model](./model#--31-m)
+
+## - 1.2.② 创建 action - model instead
+
+命名遵循驼峰格式: 动词 + 名词，例如 login，pullUserInfo
+
+实际生成: doLogin, loginReducer
+
+```shell
+  ./node_modules/.bin/tkit-kit add action feature/actionName
+```
+
+## - 1.2.③ 创建异步 action - model instead
+
+命名遵循驼峰格式: 动词 + 名词，例如 login，pullUserInfo
+
+实际生成 action: doLogin, loginReducer, sagaLogin
+
+```shell
+  ./node_modules/.bin/tkit-kit add action feature/sagaName -a
+```
+
+## - 1.2.④ 创建适配 antd 分页 list action
+
+命名请: myList - 用以表示分页
+
+```shell
+  # 命令请使用 myList 结构
+  ./node_modules/.bin/tkit-kit add list feature/myList
+```
+
+对应 store、actions
+
+```ts
+  // 往指定 feature 下写入 myList 数据结构
+  {
+    [featureName]: {
+      [myList]: {
+        pageData: [],
+        total: 0,
+        params: {
+          current: 1,
+          pageNum: 1,
+          pageSize: 10,
+          ...params
+        },
+        rowKey: 'id', // 默认是 id
+        selectedRowKeys: [], // 当前选中的行的 rowKeys
+        loading: true, // 是否正在加载
+        isfetch: true, // 是否正在加载，同 loading
+        fetchError: false // 错误信息
+      }
+    }
+  }
+
+  // 往 actions 内写入
+  {
+    // 拉取翻页数据
+    doTestList: (params: Home.ListParams) => xxx
+    // 选中行，适配 antd
+    doSelectTestList: (payload: {
+      // 设置选中
+      selectedRowKeys?: IPagenationState['selectedRowKeys'];
+      // 指定新的 rowKey
+      rowKey?: string | number;
+    }) => xxx
+    // 此方法预留，需手动写入 actions
+    // modifyDataAction: (reducer: (list: List) => List) => xxx
+  }
+```
+
+## - 1.2.⑤ tPut, tCall
+
+typescript 化 redux-saga 的 put & call
+
+```ts
+  import { TkitUtils as Utils } from 'tkit-types';
+
+  // 注意： 不要把这里的 effect 和 model 的 effects 混淆，effects 最终会生成 action 并可以供 tPut 调用
+  // args 类型必须是 effect 定义的参数类型
+  tCall(effect, args: typed)
+
+  // 解决由于使用了 yield 造成 data 类型丢失的问题, use Utils.GetROA for short
+  const data: Utils.GetReturnTypeOfAsyncFun<typeof effect> = yield tCall(effect, args);
+
+  // 调用通过 typesafe-actions 创建的 action 以及从 model effects & reducers 自动生成的 action，向下不兼容 redux-actions 创建的 action
+  tPut(action, args: typed) - args 类型必须是 action 定义的参数类型
+```

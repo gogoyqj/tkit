@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { operationIdGuard, strictModeGuard } from '@src/guard';
-import { SwaggerJson, GuardConfig } from '@src/consts';
+import { operationIdGuard, strictModeGuard } from 'src/guard';
+import { SwaggerJson, GuardConfig } from 'src/consts';
 
 const url = '/api/v1/persons';
 const url1 = '/api/v1/interviewer/persons';

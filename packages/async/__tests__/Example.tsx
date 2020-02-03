@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import { Spin, Modal, Button, Input, message } from 'antd';
 import 'antd/dist/antd.css';
-import { AjaxPromise, TkitAjaxFunction } from 'tkit-ajax';
+import { AjaxPromise, TkitAjaxFunction, promiseFactory } from 'tkit-ajax';
 import Async from '../src/Async';
 import {
   AsyncFormProps,
@@ -14,7 +15,9 @@ import {
 import { doAsync, doAsyncConfirmed } from '../src/';
 import { AsyncResultEventType } from '../src/consts';
 
-export class FormFaker extends React.Component<AsyncFormProps> {
+window.__TKIT_USE_MODEL_LOGGER__ = console.log;
+
+export class FormFaker extends React.Component<AsyncFormProps> implements AsyncForm {
   public static fakeData = {
     name: 'skipper'
   };
@@ -32,11 +35,17 @@ export class FormFaker extends React.Component<AsyncFormProps> {
   }
 }
 
-const loadData = (id: number): AjaxPromise<any> => {
+const loadData = (id: number, opt?: { cancel?: Promise<any> }): AjaxPromise<any> => {
   console.log('running effect');
-  return new Promise((rs, rj) => {
-    setTimeout(() => rs({ code: 0, message: '逗我呢', result: { id } }), 1000);
+  const prom = new Promise((rs, rj) => {
+    const timer = setTimeout(() => rs({ code: 0, message: '逗我呢', result: { id } }), 1000);
+    if (opt && opt.cancel) {
+      opt.cancel.then(() => {
+        clearTimeout(timer);
+      });
+    }
   });
+  return prom;
 };
 
 export default function Example() {
@@ -50,6 +59,7 @@ export default function Example() {
       />
       <Button
         onClick={() => {
+          const [{ resolve }, prom] = promiseFactory<string>();
           doAsync({
             fetch: loadData,
             callback: console.log,
@@ -72,7 +82,16 @@ export default function Example() {
                     嵌套了
                   </Button>
                 </div>
-              )
+              ),
+              onCancel: resolve
+            },
+            paramsGenerator: () => {
+              return [
+                1,
+                {
+                  cancel: prom
+                }
+              ];
             }
           });
         }}

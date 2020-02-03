@@ -1,6 +1,14 @@
+/**
+ * @file: useModel 语法层面测试
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-20 12:42:11
+ */
+
 import { parser } from './parser';
 
-const files = 'testLocalModelFail.ts testLocalModelOK.ts testUseModelFail.ts testUseModelOK.ts'.split(
+const files = 'testLocalModelFail.ts testLocalModelOK.ts testUseModelFail.ts testUseModelOK.ts testMMFail.ts testMMOK.ts'.split(
   ' '
 );
 

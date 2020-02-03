@@ -1,3 +1,11 @@
+/**
+ * @file: 通过 config/paths.js 覆盖
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 17:00:19
+ */
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 'use strict';
 

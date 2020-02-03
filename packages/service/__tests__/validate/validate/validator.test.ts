@@ -1,4 +1,4 @@
-import { getParamSchema } from '@src/validate/validator';
+import { getParamSchema } from 'src/validate/validator';
 
 describe('validate/validator', () => {
   const params = [

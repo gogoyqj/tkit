@@ -4,6 +4,167 @@ menu: 'ajax'
 route: /tkit/ajax
 ---
 
-import Readme from './README.md';
+import { Props } from 'docz';
+import {
+  ResultInterface,
+  ParamsInterface,
+  FetchInterface,
+  ExtraFetchParamsInterface
+} from './__tests__/Doc.tsx';
 
-<Readme />
+# `npm i tkit-ajax`
+
+tkit 规范 ajax 封装
+
+## 1. ⚠️ Tips
+
+- `npm i tkit-ajax tkit-async tkit-model` 确保依赖安装正确
+- url 包含 testUser=xxx 的 search 参数，将自动注入到所有 ajax 请求 query 内
+
+## 2. API
+
+## - 2.1. ajax
+
+```ts
+import ajax from 'tkit-ajax';
+```
+
+### interface `ajax`
+
+<Props of={FetchInterface} />
+
+## - 2.2. ajax.ajax 参数
+
+### interface `WrappedFetchParams`
+
+```ts
+interface WrappedFetchParams extends ExtraFetchParams {}
+```
+
+<Props of={ParamsInterface} />
+
+### interface `ExtraFetchParams`
+
+<Props of={ExtraFetchParamsInterface} />
+
+### Example
+
+```ts
+ajax.ajax(WrappedFetchParams);
+```
+
+## - 2.3 标准接口规范
+
+数据响应标准的 code & message & result 结构
+
+### interface `TkitAbstractAjaxResult`
+
+<Props of={ResultInterface} />
+
+### Example
+
+```ts
+import ajax, { TkitAjaxResult, TkitAjaxFunction, AjaxPromise } from 'tkit-ajax';
+
+const res: TkitAjaxFunction = { code: 0, result: { id: 2 } };
+const fetchData: TkitAjaxFunction = async () => res;
+const fetchData2: () => AjaxPromise<{ code: number; result: { id: number } }> = async () => res;
+```
+
+## - 2.4 非标准接口规范
+
+后端提供的接口文档是不包含标准的 code & message & result 结构，但实际数据是
+
+### 配置 `tsconfig.json`
+
+```json
+{
+  "paths": {
+    "@ajax": ["src/utils/standard-ajax"]
+  }
+}
+```
+
+### 实现 `standard-ajax.ts`
+
+```ts
+export * from 'tkit-ajax';
+export { NonStandardAjaxPromise as AjaxPromise } from 'tkit-ajax';
+export { default } from 'tkit-ajax';
+```
+
+## - 2.5. ajax 全局事件
+
+统一处理 401 & 403 错误
+
+```ts
+import { EventCenter } from 'tkit-event/lib/event';
+
+EventCenter.on('common.user.status', (res: { code?: number; message?: string }) => {});
+```
+
+## - 2.6. axios 全局配置
+
+```typescript
+import axios from 'tkit-ajax/lib/axios';
+
+/** 配置请求头 */
+axios.defaults.headers = {
+  ['X-TOKEN']: 'something secret'
+};
+
+import qs from 'qs';
+
+/** 配置如何格式化query里的数组 */
+axios.defaults.paramsSerializer = params => qs.stringify(params, { arrayFormat: 'repeat' });
+```
+
+## - 2.7. 【Deprecated】useFetch
+
+自版本 `3.2.4` 起，拆分至 `tkit-use-fetch`
+
+在组件里直接调用 service, ⚠️ 自版本 `npm i tkit-ajax@3.1.1 tkit-async@3.1.1` 支持
+
+## 3. Graphql
+
+基于 graphql-request 封装的 axios 版本
+
+## - 3.1. 配置 client
+
+```ts
+import { GraphQLClient } from 'tkit-ajax/lib/graphql';
+import { getSdk } from '@src/models/service';
+
+const isProd = process.env.NODE_ENV !== 'development';
+const endpoint = isProd ? '/graphql' : 'http://127.0.0.1/graphql';
+
+export const Client = new GraphQLClient(endpoint, {
+  headers: {
+    'Access-Control-Allow-Origin': '*'
+  }
+});
+
+/** xx services */
+export default getSdk(Client);
+```
+
+## - 3.2. service
+
+```ts
+import { GraphQLClient } from 'tkit-ajax/lib/graphql';
+import { print } from 'graphql';
+import gql from 'graphql-tag';
+import { AjaxPromise, ExtraFetchParams } from 'tkit-ajax';
+
+export function getSdk(client: GraphQLClient) {
+  return {
+    docList(
+      variables: DocListQueryVariables,
+      /** 用以 cancel 请求 */
+      opt?: ExtraFetchParams
+    ): AjaxPromise<DocListQueryRes> {
+      return client.request<DocListQueryRes>(print(DocListDocument), variables, opt);
+    }
+  };
+}
+```

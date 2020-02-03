@@ -1,5 +1,5 @@
-import { Tction, M } from '@src/useModel';
-// import '@src/utils/utils'; // @fix: 暂且以此方法猥琐的解决 Utils namespace 未载入的问题
+import { Tction, M } from 'src/useModel';
+// import 'src/utils/utils'; // @fix: 暂且以此方法猥琐的解决 Utils namespace 未载入的问题
 
 export const remoteState = { username: 'remote name' };
 export const clearState = { username: '' };

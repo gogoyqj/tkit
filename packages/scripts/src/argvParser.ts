@@ -1,3 +1,10 @@
+/**
+ * @file: 解析命令行参数
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 16:53:01
+ */
 import { THEME } from './consts';
 
 export default function argvParser(argv: string[], options: {} = {}) {

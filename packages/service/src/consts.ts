@@ -1,4 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import * as path from 'path';
 import { JSONSchema4, JSONSchema6 } from 'json-schema';
 import { CoreOptions } from 'request';
 
@@ -93,33 +94,45 @@ export interface GuardConfig {
   methodUrl2OperationIdMap?: String2StringMap;
   /** 模式: safe strict */
   mode?: SwaggerGuardMode;
-  /** 采用url生成方法名时，需要移除的前缀正则 */
+  /** 采用url生成方法名时，需要移除的前缀正则，默认值：/^(\/)?api\//g */
   prefixReg?: RegExp;
-  /** 参数格式不符合规范的正则 */
+  /** 参数格式不符合规范的正则，默认值：/[^a-z0-9_.[]$]/gi */
   badParamsReg?: RegExp;
-  /** 不符合规范Tag正则 */
+  /** 不符合规范Tag正则，默认值：/^[a-z-0-9_$A-Z]+-controller$/g */
   unstableTagsReg?: RegExp;
-  /** 检测Tag是否全英文 */
+  /** 检测Tag是否全英文，默认值：/^[a-z-0-9_$]+$/gi */
   validTagsReg?: RegExp;
-  /** DTO命名是否符合规范正则 */
+  /** DTO命名是否符合规范正则，默认值：/^[a-z-0-9_$«»,]+$/gi */
   validDefinitionReg?: RegExp;
+  /** 校验 url 规则，默认值： /api/g，自 3.1.6 新增 */
+  validUrlReg?: RegExp;
+}
+
+export interface YAPIConfig {
+  /**
+   * 相应是否字段是否必须；当直接使用 yapi json 定义返回数据格式的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的
+   * */
+  required?: boolean;
+  /**
+   * postJSON字段是否必须；当直接使用 yapi json 定义 json 格式 body 参数的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的
+   */
+  bodyJsonRequired?: boolean;
+  /**
+   * 分类名中文=>英文映射；yapi 项目接口分类中英文映射，如 `{ "公共分类": "Common" }`
+   */
+  categoryMap?: String2StringMap | ((cate: string) => string);
 }
 
 /** CLI配置 */
 export interface Json2Service {
-  /** Swagger或者Mock JSON文档地址 */
-  url?: string;
+  /** Swagger或者Mock JSON文档地址，自 3.1.* 起，请配置成本地文件 */
+  url: string;
+  /** 远程 url，配置成远程地址，用于增量更新使用；自 @3.1.* 支持 */
+  remoteUrl?: string;
   /** 类型 yapi 或默认 swagger */
   type?: 'yapi' | 'swagger';
   /** 如果是 yapi，配置 */
-  yapiConfig?: {
-    /** 相应是否字段是否必须 */
-    required?: boolean;
-    /** postJSON字段是否必须  */
-    bodyJsonRequired?: boolean;
-    /** 分类名中文=>英文映射 */
-    categoryMap?: String2StringMap | ((cate: string) => string);
-  };
+  yapiConfig?: YAPIConfig;
   /** Swagger生成TS代码相关配置 */
   swaggerParser?: SwaggerParser;
   /** 生成自动校验逻辑 */
@@ -132,12 +145,17 @@ export interface Json2Service {
 
 /** Swagger Codegen配置 */
 export interface SwaggerParser {
-  /** 输出目录 */
+  /** 输出 typescript 代码目录，默认是当前 src/services */
   '-o'?: string;
-  /** 模板 */
+  /** yapi 或者 swagger， 标记类型，默认是 swagger */
   '-t'?: string;
-  /** 语言 */
+  /** 模板目录，默认是 typescript-angularjs，避免修改   */
   '-l'?: string;
   /** 输入文件 */
   '-i': string;
 }
+
+/** 项目目录 */
+export const ProjectDir = process.cwd();
+export const RemoteUrlReg = /^http/;
+export const StaticDir = path.join(__dirname, '..', 'static');

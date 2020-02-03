@@ -1,4 +1,4 @@
-import { handleActions, createAction, bindActionCreators } from '@src/actions';
+import { handleActions, createAction, bindActionCreators } from 'src/actions';
 import {
   reducer,
   initialStore,

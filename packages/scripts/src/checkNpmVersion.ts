@@ -1,3 +1,11 @@
+/**
+ * @file: 检测 npm 版本
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 16:53:49
+ */
+
 import { execSync } from 'child_process';
 import semver from 'semver';
 import { ensureFile } from 'tkit-utils';

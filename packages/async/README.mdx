@@ -5,7 +5,6 @@ route: /tkit/async
 ---
 
 import { Props, Playground } from 'docz';
-import Readme from './README.md';
 import Async from './src/Async.tsx';
 import Example, {
   StatusFaker,
@@ -17,46 +16,62 @@ import Example, {
   AsyncConfirmedFaker
 } from './__tests__/Example.tsx';
 
-<Readme />
+# `npm i tkit-async`
 
-## Async
+## 1. ⚠️ Tips
 
-### loading 属性
+- `npm i tkit-ajax tkit-async tkit-model` 确保依赖安装正确
+- 自版本 `3.0.4`起，`doAsync, doAsyncConfirmed`返回`Promise<fetch函数返回值>`
 
-显示加载效果的组件，例如直接使用 Spin:
+## 2. 配置 Async 组件
 
-```ts
-arg => <Spin spinning={arg.status.isFetch} />;
+在最顶层组件内引入 Async，监听并展示 async 事件
+
+## - 2.1 Async Props
+
+### interface `AsyncProps`
+
+<Props of={Async} />
+
+### Example
+
+见 [在 Root.tsx 内引入 Async](http://git.corp/ks-ep/ks-ep-fe/ts-boilerplate/commit/1846c9df84a783b9ed043988e830f6e62376040f)
+
+```tsx
+import React from 'react';
+import { Spin, Modal, message } from 'antd';
+import Async from 'tkit-async';
+
+// 请在 Root.tsx 内添加
+<Async
+  form={Form}
+  // loading={arg => <Spin spinning={arg.status.isFetch} />}
+  sharedLoading={Spin}
+  modal={Modal}
+  tips={({ type, message: msg }) => message[type](msg)}
+/>;
 ```
 
-### tips 属性
-
-成功、错误提示函数，例如:
-
-```ts
- const message = { error: () => 0, success: () => 1 }
- ({ type, message: msg }) => message[type](msg);
-```
-
-### modal 属性
-
-弹窗组件，可直接使用 antd Modal 或实现如下组件:
-
-```ts
-export class ModalFaker extends React.Component<AsyncModalProps> {
-  public render() {
-    const { visible, title, content, className, confirmLoading, onOk, onCancel } = this.props;
-    return <div>{content}</div>;
-  }
-}
-```
-
-### form 属性
+## - 2.1.①. `form` 属性
 
 表单组件，用来渲染表单，并在 model.onOk 时提交表单
 
+```tsx
+class Form extends React.Component<AsyncFormProps> implements AsyncForm {}
+```
+
+### interface `AsyncFormProps`
+
+<Props of={FormFaker} />
+
+### interface `AsyncForm`
+
+<Props of={FormCoreFaker} />
+
+### Example
+
 ```ts
-export class FormFaker extends React.Component<AsyncFormProps> {
+export class FormFaker extends React.Component<AsyncFormProps> implements AsyncForm {
   public static fakeData = {
     name: 'skipper'
   };
@@ -75,66 +90,169 @@ export class FormFaker extends React.Component<AsyncFormProps> {
 }
 ```
 
-### 表单组件
+## - 2.1.②. [Deprecated]`loading` 属性
 
-<Props of={Async} />
+【废弃，用 `sharedLoading` 替代】显示加载效果的组件
 
-### AsyncModalProps
+```tsx
+  interface loading {
+    (arg: AsyncStatus) => any;
+  }
+```
 
-> modal 组件必须实现的 props，兼容 antd modal
-
-<Props of={ModalFaker} />
-
-### AsyncStatus
-
-> 单条异步操作状态数据结构
+### interface `AsyncStatus`
 
 <Props of={StatusFaker} />
 
-### AsyncFormProps
+### Example
 
-> form 表单组件必须实现的 props
+```ts
+(arg: AsyncStatus) => <Spin spinning={arg.status.isFetch} />;
+```
 
-<Props of={FormFaker} />
+## - 2.1.③. `sharedLoading` 属性
 
-通过 getForm 方法拿到表单组件示例，并在 model.onOk 时候调用表单实例的 submit 方法
+全局加载效果组件【所有 effect 共用一个效果】版本 `3.0.6+` 开始支持
 
-### AsyncForm
+##### Example
 
-> form 表单组件必须实现的方法
+```tsx
+() => 'loading';
+```
 
-<Props of={FormCoreFaker} />
+## - 2.1.④. `modal` 属性
 
-submit 方法需返回表单 values 对象或者 Promise&lt;values>
+弹窗组件，可直接使用 antd Modal 或自定义
 
-### AsyncResultEventType
+```tsx
+class Modal extends React.Component<AsyncModalProps> {}
+```
 
-> tips 接收到的消息
+### interface `AsyncModalProps`
+
+<Props of={ModalFaker} />
+
+### Example
+
+```ts
+export class ModalFaker extends React.Component<AsyncModalProps> {
+  public render() {
+    const { visible, title, content, className, confirmLoading, onOk, onCancel } = this.props;
+    return <div>{content}</div>;
+  }
+}
+```
+
+## - 2.1.⑤. `tips` 属性
+
+成功、错误提示函数
+
+```ts
+interface tips {
+  (msg: AsyncResultEventType) => void;
+}
+```
+
+### interface `AsyncResultEventType`
 
 <Props of={ResultTypeFaker} />
 
-## api
+### Example
 
-### doAsync
+```ts
+ const message = { error: () => 0, success: () => 1 }
+ ({ type, message: msg }: AsyncResultEventType) => message[type](msg);
+```
+
+## 3. API
+
+触发 async 事件的接口
+
+```ts
+import { doAsync, doAsyncConfirmed, useAsyncStatus } from 'tkit-async';
+```
+
+## - 3.1. doAsync
+
+自版本 `tkit-async@3.0.6` & `tkit-service@3.0.14` & `tkit-ajax@3.0.4` 以上，可以取消请求
+
+## - 3.1.① doAsync 参数
+
+### interface `IAsyncActionProps`
 
 <Props of={AsyncFaker} />
 
-### doAsyncConfirmed
+### Example
 
-> - indicator: 自定义单条操作加载效果，`null` 则不显示加载效果
-> - errorMsg & successMsg: 配置为 false，则不显示操作结果提示
-> - params: fetch 单个参数下使用
-> - paramsGenerator: fetch 多个参数下使用，比如返回数组
+```ts
+doAsync(<IAsyncActionProps<any>>{ ... })
+```
+
+### Example Cancel
+
+```ts
+import { promiseFactory } from 'tkit-ajax';
+
+const [{ resolve }, cancel] = promiseFactory<string>();
+const res = yield doAsync({
+  fetch: naotu.doModifyDoc,
+  ...,
+  paramsGenerator: ({ extraParams }) => [
+    {
+      doc: {
+        ...extraParams
+      }
+    },
+    {
+      cancel
+    }
+  ],
+  onCancel: () => {
+    resolve('放弃了');
+  },
+  ...
+});
+```
+
+## - 3.2. doAsyncConfirmed
+
+## - 3.2.① doAsyncConfirmed 参数
+
+### interface `IAsyncConfirmedParams`
 
 <Props of={AsyncConfirmedFaker} />
 
-## Demo
+### Example
+
+```ts
+doAsyncConfirmed(<IAsyncConfirmedParams<any>>{ ... })
+```
+
+## - 3.3. useAsyncStatus
+
+自版本 `3.0.5` 起支持——定制组件局部的 loading 效果——注意：需要再容器内局部显示 loading 效果的，请勿将 model effects 配置 loading，否则也会显示全局 loading 效果
+
+### Example
+
+```tsx
+import { useAsyncStatus } from 'tkit-async';
+
+const Cp = () => {
+  const [status] = useAsyncStatus(
+    (status: AsyncStatus) => status.effectName === 'docModel/getDocList'
+  );
+
+  return status ? 'loading' : null;
+};
+```
+
+## 4. Example
 
 <Playground>
   <Example />
 </Playground>
 
-### Demo Source Code
+### Example Source Code
 
 ```tsx
 import React from 'react';

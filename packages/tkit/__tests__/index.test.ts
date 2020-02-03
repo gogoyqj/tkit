@@ -2,9 +2,9 @@ import path from 'path';
 import fsX from 'fs-extra';
 import { ProjectOptions } from 'ts-morph';
 
-import { action } from '@src/index';
-import { astHandler, OperationFileMap, OperationType } from '@src/utils/astHandler';
-import { coreDirectory } from '@src/consts';
+import { action } from 'src/index';
+import { astHandler, OperationFileMap, OperationType } from 'src/utils/astHandler';
+import { coreDirectory } from 'src/consts';
 
 const featuresDirectory = path.join(coreDirectory, 'src', 'features');
 const testsDirectory = path.join(coreDirectory, 'tests');
@@ -15,7 +15,7 @@ function clearBoilerplate() {
 }
 
 // @cc: 必须置于顶层
-jest.mock('@src/utils/astHandler');
+jest.mock('src/utils/astHandler');
 
 const { clearASTLogs, ASTLogs } = (() => {
   const ASTLogs: any[] = [];

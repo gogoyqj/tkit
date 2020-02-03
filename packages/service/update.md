@@ -69,7 +69,7 @@ swagger 定义的数据结构，对应生成 typescript interface - 工具无法
 
 ```shell
 npm i -D tkit-service // 公司内 3.0.7+
-npm i -D sm2tsservice  // 公司外部 1.1.8+
+npm i -D sm2tsservice  // 公司外部 1.1.8+，目前已停止更新该工具
 ```
 
 ### 处置方式

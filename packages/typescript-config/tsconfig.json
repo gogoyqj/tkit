@@ -10,7 +10,6 @@
     "sourceMap": true,
     "allowJs": false,
     "moduleResolution": "node",
-    "rootDir": "src",
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,

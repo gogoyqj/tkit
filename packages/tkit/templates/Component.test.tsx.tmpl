@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 <% if (connect) { %>
-import { <%= componentName %> } from '@src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
+import { <%= componentName %> } from 'src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
 <% } else {%>
-import <%= componentName %> from '@src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
+import <%= componentName %> from 'src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
 <% } %>
 describe('<%= feature %>/<%= componentName %>', () => {
   it('renders node with correct class name', () => {<% if (connect || url) {%>

@@ -1,6 +1,6 @@
 {
   "name": "tkit-eslint-config-tkit",
-  "version": "3.0.3",
+  "version": "3.0.6",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -26,16 +26,16 @@
     "prettier": ">= 1.13.0"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.11.0",
-    "@typescript-eslint/parser": "^1.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
     "eslint": "^5.0.0",
-    "eslint-config-prettier": "^5.0.0",
+    "eslint-config-prettier": "^6.6.0",
     "eslint-config-recommended": "^4.0.0",
     "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.14.1",
     "eslint-plugin-react-hooks": "^1.6.0",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "tslib": "^1.9.3"
   },
   "devDependencies": {

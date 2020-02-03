@@ -1,3 +1,11 @@
+/**
+ * @file: webpack external 配置，可通过 config/externals.js 覆盖
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+* @LastEditors: yangqianjun
+* @LastEditTime: 2019-12-09 16:58:48
+ */
+
 const momentLocaleRegExp = /\/node_modules\/moment\/locale$/;
 
 module.exports = [

@@ -1,3 +1,12 @@
+/**
+ * @file: 通过 config/webpack.config.prod.js 覆盖
+ * @author: yangqianjun
+ * @Date: 2019-07-20 15:12:00
+ * @LastEditors: yangqianjun
+ * @LastEditors: yangqianjun 16:59:13
+ * @LastEditTime: 2020-01-09 12:50:08
+ */
+
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-var-requires */
 'use strict';
@@ -114,7 +123,7 @@ module.exports = {
       automaticNameDelimiter: '~',
       name: true,
       cacheGroups: {
-        antd: {
+        'a-vendor': {
           test: /[\\/]node_modules[\\/](?!quill)/,
           name: 'antd',
           chunks: 'initial',
@@ -188,7 +197,6 @@ module.exports = {
                 loader: require.resolve('css-loader'),
                 options: {
                   importLoaders: 1,
-                  minimize: true,
                   sourceMap: shouldUseSourceMap
                 }
               },

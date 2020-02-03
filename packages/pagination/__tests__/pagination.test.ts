@@ -1,6 +1,6 @@
 import { call, put, select } from 'redux-saga/effects';
 
-import { pagination } from '@src/index';
+import { pagination } from 'src/index';
 
 import {
   params,

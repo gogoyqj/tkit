@@ -71,7 +71,7 @@ export const responseHooksFactory = (cb: SMValidator) => async (
   swagger: SMValidateInfo['swagger']
 ) => {
   const error: string[] = req[X_SM_ERROR] || [];
-  let result: SMValidateInfo = {
+  const result: SMValidateInfo = {
     req,
     res,
     swagger,

@@ -1,14 +1,23 @@
+/**
+ * @author: yangqianjun
+ * @file: 类似 dva model 的 TypeScript 封装
+ * @Date: 2019-11-19 16:14:12
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2020-01-06 18:24:59
+ */
+
+import { produce } from 'immer';
 import * as sagaEffects from 'redux-saga/effects';
 import { createAction, handleActions } from 'tkit-actions';
 import { TkitUtils } from 'tkit-types';
 import { EventCenter } from 'tkit-event';
-import { IAsyncConfirmedParams } from 'tkit-async';
-// @IMP: 解除循环依赖
+import { IAsyncConfirmedParams } from 'tkit-async/lib/asyncModel';
+// IMP: 解除循环依赖
 import { ASYNC_EFFECT_EVENT_NAME } from 'tkit-async/lib/consts';
 
 export * from 'redux-saga/effects';
 
-export const { all: sagaAll, call: sagaCall } = sagaEffects;
+export const { all: sagaAll, call: sagaCall, cancelled } = sagaEffects;
 
 export const effects = sagaEffects;
 /**
@@ -43,13 +52,18 @@ export interface Tction<P> {
 /**
  * Tkit Basic Action
  */
-type AbstractAction = Tction<any>;
+export type AbstractAction = Tction<any>;
 
 /**
  * 供推导同步Actions的Reducers
  */
 export interface Reducers<M> {
   [doSomething: string]: <P extends AbstractAction>(state: Readonly<M>, action: P) => M;
+}
+
+export interface CMReducers<M> {
+  // void | M 则兼容 Reducers
+  [doSomething: string]: <P extends AbstractAction>(state: M, action: P) => void | M;
 }
 
 /**
@@ -80,7 +94,9 @@ export function tPut<E extends (...args: []) => any>(effect: E | string | Tction
 export function tPut<E extends (one: any) => any>(
   effect: E | string | Tction<any>,
   args: TkitUtils.GetArgumentsType<E>[0] extends undefined
-    ? (E extends string ? any : never)
+    ? E extends string
+      ? any
+      : never
     : TkitUtils.GetArgumentsType<E>[0]
 ): any;
 export function tPut<E extends (...args: any[]) => any>(
@@ -192,6 +208,13 @@ const defaultEffectOptions: EffectOptions = {
 // effects dependences
 export type Sagas = ((...args: any[]) => any)[];
 
+export const enum ModernType {
+  /** redux */
+  ReduxModern = 0,
+  /** useModel */
+  HookModern = 1
+}
+
 /**
  * Model工厂
  * @param model
@@ -201,43 +224,41 @@ export type Sagas = ((...args: any[]) => any)[];
  * @param model.effects 副作用，推导异步actions
  */
 export default function createModel<M, R extends Reducers<M>, E extends Effects>(model: {
-  /**
-   * 命名空间
-   */
+  /** 命名空间 */
   namespace: string;
-  /**
-   * 初始状态
-   */
+  /**  初始状态 */
   state: M;
   reducers: R;
   effects?: E;
+  /** modern 模式，引入 immer，解决 namespace 的问题 */
+  m?: ModernType;
 }) {
   type ReducerName = keyof R;
   type EffectName = keyof E;
-  // @IMP: 修复当 model effects 缺省的情况下，推断 TYPES 字符串类型错误的bug
+  // IMP: 修复当 model effects 缺省的情况下，推断 TYPES 字符串类型错误的bug
   type ActionTypes = { [doSomething in ReducerName]: string } &
     { [doSomething in EffectName]: string };
-  // @IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
+  // IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
   type SyncActions = {
-    [doSomething in ReducerName]: (TkitUtils.GetArgumentsType<R[doSomething]>[1] extends
+    [doSomething in ReducerName]: TkitUtils.GetArgumentsType<R[doSomething]>[1] extends
       | never
       | undefined
       ? () => any
-      : (<P extends TkitUtils.GetArgumentsType<R[doSomething]>[1]>(payload: P['payload']) => P));
+      : <P extends TkitUtils.GetArgumentsType<R[doSomething]>[1]>(payload: P['payload']) => P;
   };
-  // @IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
-  // @FIXME: 泛型则丢类型
+  // IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
+  // FIXME: 泛型则丢类型
   type AsyncActions = {
-    [doSomething in EffectName]: (TkitUtils.GetArgumentsType<
+    [doSomething in EffectName]: TkitUtils.GetArgumentsType<
       TkitUtils.GetModelEffect<E[doSomething]>
     >[1] extends never | undefined
       ? () => any
-      : (<P extends TkitUtils.GetArgumentsType<TkitUtils.GetModelEffect<E[doSomething]>>[1]>(
+      : <P extends TkitUtils.GetArgumentsType<TkitUtils.GetModelEffect<E[doSomething]>>[1]>(
           payload: P['payload']
-        ) => P));
+        ) => P;
   };
   type Actions = SyncActions & AsyncActions;
-  const { namespace, state, reducers, effects } = model;
+  const { namespace, state, reducers, effects, m: modern } = model;
   const reducersMap: any = {};
   const TYPES: any = {};
   let actions = Object.keys(reducers).reduce(
@@ -245,7 +266,23 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
       type Action = typeof reducers[typeof doSomething];
       type Payload = TkitUtils.GetArgumentsType<Action>[1];
       const type = (TYPES[doSomething] = `${namespace}/${doSomething}`);
-      reducersMap[type] = reducers[doSomething];
+      // 引入 immer & 自动 namespace 隔离
+      reducersMap[type] =
+        modern === ModernType.ReduxModern
+          ? <S>(state: S, action: AbstractAction) => {
+              return {
+                ...state,
+                [namespace]: produce(state[namespace], draftState =>
+                  reducers[doSomething](draftState, action)
+                )
+              };
+            }
+          : modern === ModernType.HookModern
+          ? <S>(state: S, action: AbstractAction) => {
+              // cheat
+              return produce(state, draftState => reducers[doSomething](draftState as any, action));
+            }
+          : reducers[doSomething];
       actions[doSomething] = ((payload: Payload['payload']) =>
         createAction(type, payload)) as Actions[typeof doSomething];
       return actions;
@@ -271,7 +308,7 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
           effectOptions = { ...defaultEffectOptions, ...saga[1] };
           saga = saga[0];
         }
-        const effect = effectWrapper(saga, CustomEffects, effectOptions);
+        const effect = effectWrapper(saga, CustomEffects, type, effectOptions);
         switch (effectOptions.type) {
           case 'throttle':
             genSagas.push(sagaEffects.throttle(effectOptions.ms || 100, type, effect));
@@ -294,13 +331,17 @@ export default function createModel<M, R extends Reducers<M>, E extends Effects>
     },
     TYPES: TYPES as ActionTypes,
     effects: { ...effects },
+    namespace,
     __model: model
   };
 }
 
-export function effectWrapper<T extends BaseEffects, P, S>(
+const fakeEffectRes = { code: 0 };
+
+export function effectWrapper<T extends BaseEffects, A, S>(
   effect: S,
   effects: T,
+  effectName: string,
   EffectOptions?: EffectOptions
 ) {
   const { tPut: put } = effects;
@@ -310,71 +351,98 @@ export function effectWrapper<T extends BaseEffects, P, S>(
   const loading = (EffectOptions && EffectOptions.loading) || false;
   const local = (EffectOptions && EffectOptions.local) || false;
   const silent = EffectOptions && EffectOptions.silent;
-  let rs: (...args: any) => any = () => 0;
-  let res: {
-    code?: number;
-    message?: React.ReactNode;
-  } = {
-    code: 0,
-    message: false
-  };
-  const getMsg = () => typeof res.message !== 'object' && res.message;
-  let interactEffect: Function;
-  if (silent !== true) {
-    interactEffect = () => {
-      const asyncPayload: IAsyncConfirmedParams<any> = {
-        fetch: () =>
-          new Promise(resolve => {
-            rs = resolve;
-          }),
-        errorMsg: getMsg,
-        successMsg: getMsg,
-        indicator: loading === false ? loading : undefined,
-        channel: 'tkit-model/effect'
-      };
-      EventCenter.emit(ASYNC_EFFECT_EVENT_NAME, {
-        type: 'doAsyncConfirmed',
-        payload: asyncPayload
-      });
+  /** 支持并发 */
+  const effectFactory = () => {
+    let rs: (...args: any) => any = () => 0;
+    const res: {
+      code?: number;
+      message?: React.ReactNode;
+    } = {
+      code: 0,
+      message: false
     };
-  }
+    const getMsg = () => typeof res.message !== 'object' && res.message;
+    let interactEffect: Function = rs;
+    // 自动模拟 loading & 成功错误信息效果
+    if (silent !== true) {
+      interactEffect = () => {
+        res.code = 0;
+        res.message = false;
+        // IMP: 有些Effects可能是同步的，所以对rs的赋值必须是同步，而不是在fetch被调用的时候
+        const prom = new Promise(resolve => {
+          // IMP: fakeEffect must be successful // 我有点记不得这是为啥了
+          // loading 交互效果由 prom mock 出来，在真正的 fetch effect 执行完成后 resolve
+          // FIX: 如果恒返回 fakeEffectRes，那么错误信息就显示吧出来
+          rs = r => resolve(r || fakeEffectRes);
+        });
+        const asyncPayload: IAsyncConfirmedParams<any> = {
+          fetch: () => prom,
+          errorMsg: getMsg,
+          successMsg: getMsg,
+          effectName,
+          indicator: loading === false ? loading : undefined,
+          channel: 'tkit-model/effect'
+        };
+        EventCenter.emit(ASYNC_EFFECT_EVENT_NAME, {
+          type: 'doAsyncConfirmed',
+          payload: asyncPayload
+        });
+      };
+    }
+    return {
+      getRes: () => res,
+      getResolver: () => rs,
+      getEffect: () => interactEffect
+    };
+  };
   /**
    * 局部Model不再使用gerator
    */
   return local
-    ? async (payload: P) => {
-        await put(EFFECTS_START);
-        interactEffect && interactEffect();
+    ? async (action: A) => {
+        await put({ type: EFFECTS_START, payload: { effectName } } as any);
+        const { getResolver, getRes, getEffect } = effectFactory();
+        getEffect()();
+        const res = getRes();
         try {
           if (typeof effect === 'function') {
-            res.message = (await effect(effects, payload)) || false;
+            res.message = (await effect(effects, action)) || false;
           }
         } catch (e) {
           res.code = 10100;
           res.message = e && e['message'] ? e['message'] : e;
-          await put(EFFECTS_ERROR);
+          await put({ type: EFFECTS_ERROR, payload: { effectName } } as any);
         }
-        await put(EFFECTS_END);
-        rs(res);
+        await put({ type: EFFECTS_END, payload: { effectName } } as any);
+        // 隐藏 loading
+        getResolver()(res);
       }
-    : function* wrapper(payload: P) {
-        yield put(EFFECTS_START);
-        interactEffect && interactEffect();
+    : function* wrapper(action: A) {
+        yield put({ type: EFFECTS_START, payload: { effectName } } as any);
+        const { getResolver, getRes, getEffect } = effectFactory();
+        getEffect()();
+        const res = getRes();
         try {
           if (typeof effect === 'function') {
-            res.message = yield effect(effects, payload);
+            res.message = yield effect(effects, action);
           }
         } catch (e) {
           res.code = 10100;
           res.message = e && e['message'] ? e['message'] : e;
-          yield put(EFFECTS_ERROR);
+          yield put({ type: EFFECTS_ERROR, payload: { effectName } } as any);
+        } finally {
+          // IMP: 特殊处理saga cancel
+          // eslint-disable-next-line no-constant-condition
+          if ((yield cancelled()) || true) {
+            yield put({ type: EFFECTS_END, payload: { effectName } } as any);
+            // 隐藏 loading
+            getResolver()(res);
+          }
         }
-        yield put(EFFECTS_END);
-        rs(res);
       };
 }
 
-// @IMP: 移除副作用执行器
+// IMP: 移除副作用执行器
 // export async function exeGenerator<A extends any[]>(
 //   effect: (...args: A) => IterableIterator<any>,
 //   ...args: A

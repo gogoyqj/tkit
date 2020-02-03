@@ -9,9 +9,10 @@ import { SwaggerJson, GuardConfig, String2StringMap } from './consts';
 
 type API = SwaggerJson['paths']['a']['get'];
 
+/** Name_1 格式的 operationId */
 export const dangerousOperationIdReg = /_[0-9]{1,}$/g;
-export const defaultPrefixReg = /^(\/)?api\//g;
-export const defaultBadParamsReg = /[^a-z0-9_.[]$]/gi;
+export const defaultPrefixReg: Required<GuardConfig>['prefixReg'] = /^(\/)?api\//g;
+export const defaultBadParamsReg: Required<GuardConfig>['badParamsReg'] = /[^a-z0-9_.[]$]/gi;
 
 export interface HttpMethodUrl2APIMap {
   [url: string]: API;
@@ -208,25 +209,31 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
   };
 }
 
-// @cc: 检测是否手写了 tags
-export const DefaultUnstableTagsReg = /^[a-z-0-9_$A-Z]+-controller$/g;
-// @cc: 检测是否全英文
-export const DefaultValidTagsReg = /^[a-z-0-9_$]+$/gi;
-export const DefaultValidDefinitionReg = /^[a-z-0-9_$«»,]+$/gi;
+export const DefaultUnstableTagsReg: Required<
+  GuardConfig
+>['unstableTagsReg'] = /^[a-z-0-9_$A-Z]+-controller$/g;
+export const DefaultValidTagsReg: Required<GuardConfig>['validTagsReg'] = /^[a-z-0-9_$]+$/gi;
+export const DefaultValidDefinitionReg: Required<
+  GuardConfig
+>['validDefinitionReg'] = /^[a-z-0-9_$«»,]+$/gi;
+export const DefaultValidUrlReg: Required<GuardConfig>['validUrlReg'] = /api/g;
 
 export function strictModeGuard(swagger: SwaggerJson, config: GuardConfig) {
-  const { tags = [], definitions = {} } = swagger;
+  const { tags = [], definitions = {}, paths, basePath } = swagger;
   const {
     mode,
     unstableTagsReg = DefaultUnstableTagsReg,
     validTagsReg = DefaultValidTagsReg,
-    validDefinitionReg = DefaultValidDefinitionReg
+    validDefinitionReg = DefaultValidDefinitionReg,
+    validUrlReg = DefaultValidUrlReg
   } = config;
   const info = {
     errors: Array<string>(),
     warnings: Array<string>()
   };
   if (mode === 'strict') {
+    // 校验 basePath
+    const isPathValid = !!(basePath && basePath.match(validUrlReg));
     // @cc: tags 是否符合规范
     tags.reduce<string[]>((errors, tag) => {
       const { name = '' } = tag;
@@ -259,6 +266,21 @@ export function strictModeGuard(swagger: SwaggerJson, config: GuardConfig) {
       }
       return errors;
     }, info.errors);
+    // 单独校验每个 url 是否符合规范
+    if (!isPathValid) {
+      Object.keys(paths).reduce((errors, url) => {
+        if (!url.match(validUrlReg)) {
+          errors.push(
+            `【错误】 url "${JSON.stringify(
+              url,
+              null,
+              2
+            )}" 不符合规范 ${validUrlReg}，请联系接口方修改`
+          );
+        }
+        return errors;
+      }, info.errors);
+    }
   }
   return Promise.resolve(info);
 }

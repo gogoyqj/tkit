@@ -16,7 +16,7 @@ const asyncExec = (cmd: string) =>
 
 export default async function swagger2ts(
   swaggerParser: SwaggerParser,
-  clear: boolean = false
+  clear = false
 ): Promise<{ code: number; message?: string }> {
   const java = await checkJava();
   if (java.code) {
@@ -30,7 +30,7 @@ async function checkJava() {
   return await asyncExec('java -version');
 }
 
-async function parseSwagger(config: SwaggerParser, clear: boolean = false) {
+async function parseSwagger(config: SwaggerParser, clear = false) {
   return await new Promise(async (rs, rj) => {
     if (clear) {
       try {

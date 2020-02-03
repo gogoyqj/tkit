@@ -6,7 +6,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import './<%= fileName %>.less';
 <% if (connect) { %>
 
-import { IRootState } from '@src/types';
+import { IRootState } from 'src/types';
 
 import actions from '<%= components || wrap ? '' : './' %><%= components ? '../' : '' %><%= wrap ? '../' : '' %>redux/actions';
 

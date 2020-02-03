@@ -1,5 +1,5 @@
-import { tCall, tPut } from '@src/createModel';
-// import '@src/utils/utils'; // @fix: 暂且以此方法猥琐的解决 Utils namespace 未载入的问题
+import { tCall, tPut } from 'src/createModel';
+// import 'src/utils/utils'; // @fix: 暂且以此方法猥琐的解决 Utils namespace 未载入的问题
 import { modelWithEffects } from './testCreateModelOK';
 
 export function* testWithEffectsPutAndCall() {

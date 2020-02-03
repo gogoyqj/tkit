@@ -4,7 +4,7 @@
     "module": "commonjs",
     "importHelpers": true,
     "paths": {
-      "@src/*": ["lib/*"],
+      "src/*": ["lib/*"],
       "../src/*": ["lib/*"]
     }
   }

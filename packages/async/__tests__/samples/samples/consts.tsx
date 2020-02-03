@@ -1,5 +1,6 @@
 import React from 'react';
-import { AsyncFormProps, AsyncModalProps, AsyncStatus } from '@src/asyncModel';
+import { AsyncFormProps, AsyncModalProps, AsyncStatus } from 'src/asyncModel';
+import { AsyncResultEventType } from 'src/consts';
 
 export const loadData = async (id: number) => {
   return { code: 0, message: '', result: { id } };
@@ -22,7 +23,7 @@ export class FormFaker extends React.Component<AsyncFormProps> {
   }
 }
 export const Modal = (props: AsyncModalProps) => null;
-export const tips = (props: AsyncModalProps) => null;
+export const tips = (props: AsyncResultEventType) => null;
 export const Loading = (props: { status: AsyncStatus }) => null;
 
 // @IMP: type ComponentType<P = {}> = ComponentClass<P> | FunctionComponent<P>;

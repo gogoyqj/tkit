@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 
-import { useEvent } from '@src/useEvent';
+import { useEvent } from 'src/useEvent';
 
 describe('event/useEvent', () => {
   let container: HTMLDivElement;

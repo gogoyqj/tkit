@@ -1,38 +1,65 @@
+/**
+ * @author: yangqianjun
+ * @file: ajax封装
+ * @Date: 2019-11-21 15:25:51
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-27 13:34:24
+ */
 import qs from 'qs';
-import axios, { onStatusError } from './axios';
+import axios from 'axios';
+import axiosInst, { onStatusError, emptyFunc } from './axios';
+import { promiseFactory } from './consts';
 
-export type AjaxPromise<R> = R extends { code?: number; result?: any; message?: any }
-  ? Promise<R>
-  : Promise<{ code?: number; result: R }>;
+/** 不再兼容非标准的数据结构 */
+export declare type AjaxPromise<R> = Promise<R>;
+/** 非标准包裹 */
+export declare type NonStandardAjaxPromise<R> = Promise<{
+  code?: number;
+  message?: string;
+  result: R;
+}>;
 
 export interface ExtraFetchParams {
+  /** extra data for extends */
   extra?: any;
+  /** 扩展请求头 */
+  headers?: any;
+  /** cancel request */
+  cancel?: Promise<string | undefined>;
 }
 
 export interface WrappedFetchParams extends ExtraFetchParams {
+  /** http method */
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH' | 'HEAD';
   url: string;
-  data?: any; // post json
-  form?: any; // post form
+  /** post json data */
+  data?: any;
+  /** post form data */
+  form?: any;
+  /** query data */
   query?: any;
+  /** header */
   header?: any;
+  /** path data */
   path?: any;
 }
-const testUser = qs.parse(location.search.split('?')[1]).testUser;
+const testUser =
+  typeof location !== 'undefined' && qs.parse(location.search.split('?')[1]).testUser;
 export class WrappedFetch {
-  /**
-   * @description ajax 方法
-   */
+  /** ajax 方法 */
   public ajax(
-    { method, url, data, form, query, header, extra }: WrappedFetchParams,
+    { method, url, data, form, query, header, extra, cancel, headers }: WrappedFetchParams,
     path?: string,
     basePath?: string
   ) {
     let config = {
       ...extra,
-      method: method.toLocaleLowerCase(),
-      headers: { ...header }
+      method: method.toLowerCase(),
+      headers: { ...headers, ...header }
     };
+    if (testUser) {
+      config.headers['Test-User'] = testUser;
+    }
     // json
     if (data) {
       config = {
@@ -55,7 +82,14 @@ export class WrappedFetch {
         data: qs.stringify(form)
       };
     }
-    return axios
+    const [{ resolve: cancelRequest }, internalCancel] = promiseFactory<string>();
+    config.cancelToken = new axios.CancelToken(c => {
+      // 外部
+      cancel && cancel.then(c, emptyFunc);
+      // 内部自动取消
+      internalCancel.then(c, emptyFunc);
+    });
+    const prom: Promise<any> = axiosInst
       .request({
         ...config,
         url: testUser
@@ -67,11 +101,12 @@ export class WrappedFetch {
       })
       .then(res => res.data)
       .catch(onStatusError);
+    // IMP: 修复 tkit/service 设计上的硬伤
+    prom['cancel'] = cancelRequest;
+    return prom as Promise<any>;
   }
 
-  /**
-   * @description 接口传参校验
-   */
+  /** 接口传参校验 */
   public check<V>(value: V, name: string) {
     if (value === null || value === undefined) {
       const msg = `[ERROR PARAMS]: ${name} can't be null or undefined`;

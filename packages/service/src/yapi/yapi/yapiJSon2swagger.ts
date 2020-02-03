@@ -56,12 +56,12 @@ interface STag {
 
 export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['yapiConfig'] = {}) {
   let basePath = '';
-  let info = {
+  const info = {
     title: 'unknown',
     version: 'last',
     description: 'unknown'
   };
-  let tags: STag[] = [];
+  const tags: STag[] = [];
   const { categoryMap = <T>(s: T) => s, bodyJsonRequired, required } = yapiConfig;
   list.forEach(t => {
     if (t.proBasepath) {
@@ -77,7 +77,7 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
     });
     t.name = name;
   });
-  let reg = basePath ? new RegExp(`^${basePath}`) : undefined;
+  const reg = basePath ? new RegExp(`^${basePath}`) : undefined;
   const swaggerObj: SwaggerJson = {
     swagger: '2.0',
     info,
@@ -87,18 +87,19 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
       'http' // Only http
     ],
     paths: (() => {
-      let apisObj: SwaggerJson['paths'] = {};
-      for (let category of list) {
+      const apisObj: SwaggerJson['paths'] = {};
+      for (const category of list) {
         // list of category
-        for (let api of category.list) {
+        for (const api of category.list) {
           // list of api
           const url = reg ? api.path.replace(reg, '') : api.path;
           if (apisObj[url] == null) {
             apisObj[url] = {};
           }
-          apisObj[url][api.method.toLowerCase()] = (() => {
+          const method = api.method.toLowerCase();
+          apisObj[url][method] = (() => {
             // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
-            let apiItem = {} as PathJson;
+            const apiItem = {} as PathJson;
             apiItem['tags'] = [category.name];
             apiItem['summary'] = api.title;
             apiItem['description'] = api.markdown;
@@ -117,8 +118,8 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
                 break;
             }
             apiItem['parameters'] = (() => {
-              let paramArray = [];
-              for (let p of api.req_headers) {
+              const paramArray = [];
+              for (const p of api.req_headers) {
                 // Headers parameters
                 // swagger has consumes proprety, so skip proprety "Content-Type"
                 if (p.name === 'Content-Type') {
@@ -133,7 +134,7 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
                   default: p.value
                 });
               }
-              for (let p of api.req_params) {
+              for (const p of api.req_params) {
                 // Path parameters
                 paramArray.push({
                   name: p.name,
@@ -143,7 +144,7 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
                   type: 'string' // always be type string
                 });
               }
-              for (let p of api.req_query) {
+              for (const p of api.req_query) {
                 // Query parameters
                 paramArray.push({
                   name: p.name,
@@ -153,78 +154,83 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
                   type: 'string' // always be type string
                 });
               }
-              switch (
-                api.req_body_type // Body parameters
-              ) {
-                case 'form': {
-                  for (let p of api.req_body_form) {
-                    paramArray.push({
-                      name: p.name,
-                      in: 'formData',
-                      required: Number(p.required) === 1,
-                      description: p.desc,
-                      type: p.type === 'text' ? 'string' : 'file' // in this time .formData type have only text or file
-                    });
-                  }
-                  break;
-                }
-                case 'json': {
-                  if (api.req_body_other) {
-                    let jsonParam = JSON5.parse(api.req_body_other);
-                    if (jsonParam !== null) {
-                      if (!jsonParam['type']) {
-                        // required
-                        if (bodyJsonRequired) {
-                          jsonParam = JSON.parse(
-                            JSON.stringify(jsonParam).replace(
-                              /"([^*"]+":)/g,
-                              (all, name) => `"*${name}`
-                            )
-                          );
-                        }
-                        jsonParam = ejs(jsonParam);
-                      }
-                      const name = (_.flow(
-                        _.camelCase,
-                        _.upperFirst
-                      ) as any)(url.replace(/\//g, '-') + 'Body'); // 向下兼容: 请勿修改 name 生成个规则
-                      if (jsonParam['title'] && jsonParam['title'].indexOf('empty object') !== -1) {
-                        jsonParam['title'] = name;
-                      }
+              // @IMP: get 不能有 body
+              if (method !== 'get') {
+                switch (
+                  api.req_body_type // Body parameters
+                ) {
+                  case 'form': {
+                    for (const p of api.req_body_form) {
                       paramArray.push({
-                        name,
-                        in: 'body',
-                        description: jsonParam.description,
-                        schema: jsonParam // as same as swagger's format
+                        name: p.name,
+                        in: 'formData',
+                        required: Number(p.required) === 1,
+                        description: p.desc,
+                        type: p.type === 'text' ? 'string' : 'file' // in this time .formData type have only text or file
                       });
                     }
+                    break;
                   }
-                  break;
-                }
-                case 'file': {
-                  paramArray.push({
-                    name: 'upfile',
-                    in: 'formData', // use formData
-                    description: api.req_body_other,
-                    type: 'file'
-                  });
-                  break;
-                }
-                case 'raw': {
-                  paramArray.push({
-                    name: 'raw',
-                    in: 'body',
-                    description: 'raw paramter',
-                    schema: {
-                      type: 'string',
-                      format: 'binary',
-                      default: api.req_body_other
+                  case 'json': {
+                    if (api.req_body_other) {
+                      let jsonParam = JSON5.parse(api.req_body_other);
+                      if (jsonParam !== null) {
+                        if (!jsonParam['type']) {
+                          // required
+                          if (bodyJsonRequired) {
+                            jsonParam = JSON.parse(
+                              JSON.stringify(jsonParam).replace(
+                                /"([^*"]+":)/g,
+                                (all, name) => `"*${name}`
+                              )
+                            );
+                          }
+                          jsonParam = ejs(jsonParam);
+                        }
+                        const name = (_.flow(_.camelCase, _.upperFirst) as any)(
+                          url.replace(/\//g, '-') + 'Body'
+                        ); // 向下兼容: 请勿修改 name 生成个规则
+                        if (
+                          jsonParam['title'] &&
+                          jsonParam['title'].indexOf('empty object') !== -1
+                        ) {
+                          jsonParam['title'] = name;
+                        }
+                        paramArray.push({
+                          name,
+                          in: 'body',
+                          description: jsonParam.description,
+                          schema: jsonParam // as same as swagger's format
+                        });
+                      }
                     }
-                  });
-                  break;
+                    break;
+                  }
+                  case 'file': {
+                    paramArray.push({
+                      name: 'upfile',
+                      in: 'formData', // use formData
+                      description: api.req_body_other,
+                      type: 'file'
+                    });
+                    break;
+                  }
+                  case 'raw': {
+                    paramArray.push({
+                      name: 'raw',
+                      in: 'body',
+                      description: 'raw paramter',
+                      schema: {
+                        type: 'string',
+                        format: 'binary',
+                        default: api.req_body_other
+                      }
+                    });
+                    break;
+                  }
+                  default:
+                    break;
                 }
-                default:
-                  break;
               }
               return paramArray as PathJson['parameters'];
             })();
@@ -271,10 +277,9 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
                           !schemaObj['title'] ||
                           schemaObj['title'].indexOf('empty object') !== -1
                         ) {
-                          schemaObj['title'] = (_.flow(
-                            _.camelCase,
-                            _.upperFirst
-                          ) as any)(url.replace(/\//g, '-'));
+                          schemaObj['title'] = (_.flow(_.camelCase, _.upperFirst) as any)(
+                            url.replace(/\//g, '-')
+                          );
                         }
                       }
                     }

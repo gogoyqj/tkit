@@ -1,22 +1,23 @@
-import React from 'react';
-import { TkitUtils } from 'tkit-types';
+/**
+ * @author: yangqianjun
+ * @file: ajax统一封装
+ * @Date: 2019-11-21 15:26:02
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2020-01-08 18:39:44
+ */
+
 import ajax from './new-ajax';
 
+export * from './axios';
 export * from './new-ajax';
+export * from './graphql';
 export default ajax;
-export interface TkitAbstractAjaxResult<R> {
-  /**
-   * 后端返回的错误码或者提取非200的http状态码
-   */
-  code?: number;
-  /**
-   * 后端返回的错误信息
-   */
-  message?: React.ReactNode;
-  /**
-   * 后端返回的数据结构
-   */
-  result?: R;
-}
-export type TkitAjaxResult = TkitAbstractAjaxResult<any>;
-export type TkitAjaxFunction = TkitUtils.AbstractAsyncFunction<TkitAjaxResult>;
+export {
+  AjaxCancelCode,
+  AjaxErrorCode,
+  GraphQLErrorCode,
+  TkitAbstractAjaxResult,
+  TkitAjaxResult,
+  TkitAjaxFunction,
+  AjaxCancelMessage
+} from './consts';

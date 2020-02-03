@@ -1,8 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import { EventCenter } from '@src/event';
-import EventWrapper, { IEventWrapperProps } from '@src/EventWrapper';
+import { EventCenter } from 'src/event';
+import EventWrapper, { IEventWrapperProps } from 'src/EventWrapper';
 
 describe('event/EventWrapper', () => {
   describe('event/EventWrapper', () => {

@@ -1,6 +1,6 @@
 {
   "name": "tkit-event",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -26,7 +26,7 @@
     "react-dom": ">=16.8.3"
   },
   "dependencies": {
-    "eventemitter3": "^4.0.0",
+    "tkit-event-center": "file:../event-center",
     "tslib": "^1.9.3"
   },
   "devDependencies": {

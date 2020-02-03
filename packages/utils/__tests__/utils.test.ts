@@ -1,4 +1,4 @@
-import { concatDirectory } from '@src/utils';
+import { concatDirectory } from 'src/utils';
 
 describe('tkit-utils', () => {
   it('should concatDirectory works ok', () => {

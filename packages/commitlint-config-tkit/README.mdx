@@ -4,6 +4,42 @@ menu: 'spec'
 route: /tkit/commitlint-config-tkit
 ---
 
-import Readme from './README.md';
+# `npm i -D tkit-commitlint-config-tkit`
 
-<Readme />
+> git commit 规则封装
+
+## Usage
+
+```js
+const commitlintConfigTkit = require('tkit-commitlint-config-tkit');
+
+module.exports = commitlintConfigTkit;
+```
+
+## 格式
+
+```shell
+  git commit -m '[type](scope): subject'
+```
+
+`type` 可选：
+
+- 'refactor' 除下列其他情况外任意修改
+- 'feat' 新功能
+- 'fix' bug 修复
+- 'chore' 构建、测试等依赖的变更
+- 'docs' 文档
+- 'revert' 回滚
+- 'test' 测试相关
+- 'build'
+- 'ci'
+- 'perf'
+- 'style'
+
+## Example
+
+```shell
+  git commit -m 'feat: 新增了一个模块'
+  git commit -m 'fix(user): 修复了一个bug'
+  git commit -m 'chore(service): 升级了 tkit-service'
+```

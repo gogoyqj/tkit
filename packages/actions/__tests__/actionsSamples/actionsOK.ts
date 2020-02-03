@@ -1,4 +1,4 @@
-import { handleActions, createAction, Action, bindActionCreators } from '@src/actions';
+import { handleActions, createAction, Action, bindActionCreators } from 'src/actions';
 
 export interface Store {
   username: string;

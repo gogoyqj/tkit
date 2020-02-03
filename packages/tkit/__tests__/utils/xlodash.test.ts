@@ -1,5 +1,5 @@
 import loadsh from 'lodash';
-import _ from '@src/utils/xlodash';
+import _ from 'src/utils/xlodash';
 
 describe('utils/xloadsh', () => {
   it('should extends loadsh', () => {

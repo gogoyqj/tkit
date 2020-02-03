@@ -22,5 +22,9 @@ if (!fs.existsSync(ConfigFile)) {
 } else {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const config: Json2Service = require(ConfigFile);
-  gen(config, { clear: commander.clear }).catch(e => console.log(chalk.red(e)));
+  gen(config, { clear: commander.clear })
+    .then(() => {
+      process.exit(0);
+    })
+    .catch(e => console.log(chalk.red(e)));
 }

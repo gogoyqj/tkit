@@ -1,3 +1,11 @@
+/**
+ * @file: 默认 antd 配色，可通过 config/colors/default.js 覆盖
+ * @author: yangqianjun
+ * @Date: 2019-07-26 13:28:29
+ * @LastEditors: yangqianjun
+ * @LastEditTime: 2019-12-09 16:55:33
+ */
+
 module.exports = {
   'primary-color': '#1E80F0',
   'link-color': '#999999',

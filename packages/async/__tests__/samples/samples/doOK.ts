@@ -1,4 +1,4 @@
-import { doAsync, doAsyncConfirmed } from '@src/index';
+import { doAsync, doAsyncConfirmed } from 'src/index';
 import { loadData, loadDataWithMoreParams } from './consts';
 
 export async function tester() {

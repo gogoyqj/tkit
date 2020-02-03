@@ -21,9 +21,10 @@
   "peerDependencies": {
     "commitlint": "^8.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "commitlint": "^8.2.0"
+  },
   "devDependencies": {
-    "commitlint": "^8.0.0",
     "tkit-typescript-config": "file:../typescript-config"
   }
 }

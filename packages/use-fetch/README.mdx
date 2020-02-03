@@ -1,0 +1,47 @@
+---
+name: use-fetch
+menu: 'ajax'
+route: /tkit/use-fetch
+---
+
+import { Props } from 'docz';
+import {
+  ResultInterface,
+  ParamsInterface,
+  FetchInterface,
+  ExtraFetchParamsInterface,
+  FetchStateInterface,
+  FetchConfigInterface,
+  FetchReturnInterface
+} from './__tests__/Doc.tsx';
+
+# `npm i tkit-use-fetch`
+
+use-fetch hooks
+
+## 1. ⚠️ Tips
+
+- `npm i tkit-ajax tkit-use-fetch`
+- 自 `tkit-ajax` 内拆分出来
+
+## 2. API
+
+## - 2.1. useFetch
+
+## - 2.1.1 useFetch 参数
+
+### interface `IFetchConfig`
+
+<Props of={FetchConfigInterface} />
+
+## - 2.1.2 useFetch 返回值
+
+### interface `ReturnType<useFetch>`
+
+<Props of={FetchReturnInterface} />
+
+## - 2.1.3 Example
+
+```ts
+import { useFetch } from 'tkit-ajax';
+```
