@@ -116,15 +116,15 @@ describe('guard', () => {
   });
 
   it('operationIdGuard increment should work ok', async () => {
-    let swagger = getSwagger();
-    let res = await operationIdGuard(swagger, optionIdMethodUrlIncrementMap);
+    const swagger = getSwagger();
+    const res = await operationIdGuard(swagger, optionIdMethodUrlIncrementMap);
     expect(res).toMatchSnapshot();
     expect(swagger).toMatchSnapshot();
   });
 
   it('operationIdGuard duplicate map should throw errors', async () => {
-    let swagger = getSwagger();
-    let res = await operationIdGuard(swagger, optionIdMethodUrlSafeModeDuplicateMap);
+    const swagger = getSwagger();
+    const res = await operationIdGuard(swagger, optionIdMethodUrlSafeModeDuplicateMap);
     expect(res).toMatchSnapshot();
     expect(swagger).toMatchSnapshot();
   });

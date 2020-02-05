@@ -100,7 +100,7 @@ export default async function gen(
     });
   });
   if (code) {
-    return code;
+    throw code;
   }
   // @IMP: 删除缓存
   delete require.cache[require.resolve(localSwaggerUrl)];
@@ -113,15 +113,11 @@ export default async function gen(
     const { warnings: w, errors } = await strictModeGuard(swaggerData, guardConfig);
     warnings.push(...w);
     if (errors.length) {
-      console.log(chalk.red(errors.join('\n')));
-      return 1;
+      throw errors.join('\n');
     }
   }
   // @cc: 风险校验
-  // IMP: 严格模式，不再无谓校验 operationId 是否存在风向
-  const { errors, warnings: w, suggestions } = await (guardConfig.mode === 'strict'
-    ? { errors: [], warnings: [], suggestions: [] }
-    : operationIdGuard(swaggerData, guardConfig));
+  const { errors, warnings: w, suggestions } = await operationIdGuard(swaggerData, guardConfig);
   warnings.push(...w);
   if (warnings.length) {
     console.log(chalk.yellow(warnings.join('\n')));
@@ -133,11 +129,10 @@ export default async function gen(
     encoding: 'utf8'
   });
   if (errors.length) {
-    console.log(chalk.red(errors.join('\n')));
     if (suggestions.length) {
       console.log(chalk.green(JSON.stringify(suggestions, undefined, 2)));
     }
-    return 1;
+    throw errors.join('\n');
   } else {
     if (suggestions.length) {
       console.log(chalk.green(JSON.stringify(suggestions, undefined, 2)));
@@ -145,8 +140,7 @@ export default async function gen(
   }
   const res = await swagger2ts({ ...swagger2tsConfig, '-i': swaggerPath }, options.clear);
   if (res.code) {
-    console.log(chalk.red(`[ERROR]: gen failed with: ${res.message}`));
-    return 1;
+    throw `[ERROR]: gen failed with: ${res.message}`;
   } else {
     console.log(chalk.green(`[INFO]: gen success with: ${localSwaggerUrl}`));
     console.log(chalk.yellowBright(`[IMP] 请将文件 ${localSwaggerUrl} 添加到版本仓库`));

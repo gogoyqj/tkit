@@ -26,5 +26,8 @@ if (!fs.existsSync(ConfigFile)) {
     .then(() => {
       process.exit(0);
     })
-    .catch(e => console.log(chalk.red(e)));
+    .catch(e => {
+      console.log(chalk.red(e));
+      process.exit(1);
+    });
 }

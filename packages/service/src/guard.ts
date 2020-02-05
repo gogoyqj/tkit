@@ -18,9 +18,7 @@ export interface HttpMethodUrl2APIMap {
   [url: string]: API;
 }
 /**
- *
- * @param swagger json
- * @param savedMethodUrl2OperationIdMap  http method + url : oldOperationId 安全映射，用以校正风险 swagger
+ * 构建 http method + url : oldOperationId 安全映射，用以校正风险 swagger
  */
 export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {}) {
   const {
@@ -30,31 +28,45 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     badParamsReg = defaultBadParamsReg
   } = config;
   const { paths } = swagger;
-  // http method + url => api info 映射
+  /**
+   * http method + url => api info 映射
+   */
   const methodUrl2ApiMap: HttpMethodUrl2APIMap = {};
-  // operationId 匹配 _[0-9] 格式，及存在被 swagger
-  const dangerousOperationId2ApiMap: { [id: string]: API[] } = {};
+  /**
+   * `XXXX_*` => `XXXX` 对 api 条目分组
+   */
+  const operationId2ApiMap: { [id: string]: API[] } = {};
+  /**
+   * 已持久化 `method` + `url` => operationId 映射
+   */
   const copySavedMethodUrl2OperationIdMap = { ...savedMethodUrl2OperationIdMap };
-  const mapped = !!Object.keys(copySavedMethodUrl2OperationIdMap).length;
+  const isRelationMapped = !!Object.keys(copySavedMethodUrl2OperationIdMap).length;
 
-  // @cc: 风险日志
+  /**
+   * 错误日志：例如参数错误、危险operationId
+   */
   const errors: string[] = [];
-  // @cc: 根据锁定关系自动校正日志
+  /**
+   * 警告日志：根据锁定关系自动校正日志
+   */
   const warnings: string[] = [];
-  // @cc: 自动推断出来的锁定映射关系
+  /**
+   * 自动推断出来的锁定映射关系
+   */
   const suggestions: String2StringMap = {};
   const isSafe = mode === 'safe';
   const isStrict = mode === 'strict';
 
-  // @cc: 新项目，检测 tags 是否符合规范
-
+  /**
+   * 风险 operationId 数组
+   */
   const dangers = Object.keys(
-    Object.keys(paths).reduce<{ [id: string]: string }>((dangers, url) => {
+    Object.keys(paths).reduce<{ [id: string]: string }>((dangerousOperationIdMap, url) => {
       const apiItem = paths[url];
       Object.keys(apiItem).forEach(method => {
         const api = apiItem[method];
         const { operationId, parameters = [] } = api;
-        // @cc: 扫描参数名字
+        // 参数格式校验
         parameters.forEach(({ name = '', in: pType, description = '' }) => {
           if (name.match(badParamsReg)) {
             errors.push(
@@ -63,7 +75,7 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
           }
         });
         if (operationId) {
-          // @cc: urlUsingMethod 作为 operationId
+          // `url`Using`Method` 作为 operationId，唯一固定
           api.privateOperationId =
             url
               .replace(prefixReg, '')
@@ -72,19 +84,28 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
             'Using' +
             method[0].toUpperCase() +
             method.substring(1);
-          const methodUrl = `${method.toLocaleLowerCase()} ${url}`;
-          api.privateMethodUrl = methodUrl;
-          methodUrl2ApiMap[methodUrl] = api;
-          const dangerousOperationId = operationId.replace(dangerousOperationIdReg, '');
-          if (`${operationId || ''}`.match(dangerousOperationIdReg)) {
-            dangers[dangerousOperationId] = '';
+          // IMP: 严格模式 & 新项目，不再无谓校验 operationId 是否存在风险，直接使用 privateOperationId
+          if (isStrict) {
+            api.operationId = api.privateOperationId;
+          } else {
+            // url -> api 映射
+            const methodUrl = `${method.toLocaleLowerCase()} ${url}`;
+            api.privateMethodUrl = methodUrl;
+            methodUrl2ApiMap[methodUrl] = api;
+            // 格式化 `XXXX_*` 为 `XXXX`
+            const dangerousOperationId = operationId.replace(dangerousOperationIdReg, '');
+            // 如果出现 `XXXX_*` 则标记 `XXXX` 存在风险
+            if (`${operationId || ''}`.match(dangerousOperationIdReg)) {
+              dangerousOperationIdMap[dangerousOperationId] = '';
+            }
+            // 将 api 按 `XXXX` 维度分组
+            operationId2ApiMap[dangerousOperationId] =
+              operationId2ApiMap[dangerousOperationId] || [];
+            operationId2ApiMap[dangerousOperationId].push(api);
           }
-          dangerousOperationId2ApiMap[dangerousOperationId] =
-            dangerousOperationId2ApiMap[dangerousOperationId] || [];
-          dangerousOperationId2ApiMap[dangerousOperationId].push(api);
         }
       });
-      return dangers;
+      return dangerousOperationIdMap;
     }, {})
   );
 
@@ -96,15 +117,18 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     };
   }
 
-  const validateThrowAndFix = (api: API) => {
+  /**
+   * 校验 or 修复 api operationId 风险
+   */
+  const validateOrFixOperationId = (api: API, errors: string[]) => {
     const { operationId = '', privateMethodUrl = '', privateOperationId } = api;
     const savedOperationId = copySavedMethodUrl2OperationIdMap[privateMethodUrl];
     if (!savedOperationId) {
       errors.push(
         `【错误】方法 "${operationId}" & "${privateMethodUrl}" 存在不可控风险，需锁定映射关系`
       );
-      // @cc: 增量情况下，避免重复
-      suggestions[privateMethodUrl] = mapped ? privateOperationId : operationId;
+      // 增量情况下，使用 `url` + `method`【privateOperationId】 替代原有 `operationId`，避免重复
+      suggestions[privateMethodUrl] = isRelationMapped ? privateOperationId : operationId;
     } else if (savedOperationId !== operationId) {
       /**
        * 尝试自动人工干涉
@@ -121,32 +145,42 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
       warnings.push(
         `【警告】方法 "${operationId}" 与 "${privateMethodUrl}" 不匹配，自动纠正为 "${savedOperationId}"`
       );
+      // 校正
       api.operationId = savedOperationId;
       delete api.privateMethodUrl;
     } // else 映射关系匹配
-    // @cc: 风险已处理
+    // 风险已处理
     delete copySavedMethodUrl2OperationIdMap[privateMethodUrl];
   };
+
+  // 对危险分组进行校验或修复
   dangers.reduce((errors, dangerousOperationId) => {
-    const group = dangerousOperationId2ApiMap[dangerousOperationId];
-    group.forEach(api => validateThrowAndFix(api));
+    const group = operationId2ApiMap[dangerousOperationId];
+    group.forEach(api => validateOrFixOperationId(api, errors));
     return errors;
   }, errors);
+
+  // 对剩余映射进行清理、映射对应的 api 进行校验或修复
   Object.keys(copySavedMethodUrl2OperationIdMap).reduce((errors, methodUrl) => {
-    // @cc: 人工干涉配置多于 swagger 配置
-    const operationId = copySavedMethodUrl2OperationIdMap[methodUrl];
+    const mappedPperationId = copySavedMethodUrl2OperationIdMap[methodUrl];
     const api = methodUrl2ApiMap[methodUrl];
+    // 已移除的 api
     if (!api) {
-      errors.push(
-        `【错误】方法 "${operationId}" 对应的 "${methodUrl}" 似乎已被移除或者发生了变化，请更新`
-      );
+      // 向下兼容老 `strict` 模式，不再抛出映射过期提示
+      if (!isStrict) {
+        errors.push(
+          `【错误】方法 "${mappedPperationId}" 对应的 "${methodUrl}" 似乎已被移除或者发生了变化，请更新`
+        );
+      }
     } else {
-      validateThrowAndFix(api);
+      // 需要修复的 api
+      validateOrFixOperationId(api, errors);
     }
     return errors;
   }, errors);
-  // @cc: 校正成功之后才可迁移
-  if (!errors.length && !Object.keys(suggestions).length && (isSafe || isStrict)) {
+
+  // 仅安全模式生成替换提示
+  if (!errors.length && !Object.keys(suggestions).length && isSafe) {
     try {
       Object.keys(paths).forEach(url => {
         const apiItem = paths[url];
@@ -154,9 +188,9 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
           const api = apiItem[method];
           const { operationId, privateOperationId } = api;
           if (operationId) {
-            // @cc: urlUsingMethod 作为 operationId
+            // `url` + Using` + Method` 作为 operationId
             api.operationId = privateOperationId;
-            // @cc: 处置重复 operationId
+            // 处置重复 operationId
             if (operationId in suggestions) {
               throw Error(
                 `【错误】映射内检测到重复 ${operationId}，无法生成正确旧、新方法替换映射关系`
@@ -218,6 +252,9 @@ export const DefaultValidDefinitionReg: Required<
 >['validDefinitionReg'] = /^[a-z-0-9_$«»,]+$/gi;
 export const DefaultValidUrlReg: Required<GuardConfig>['validUrlReg'] = /api/g;
 
+/**
+ * 严格模式特有校验逻辑
+ */
 export function strictModeGuard(swagger: SwaggerJson, config: GuardConfig) {
   const { tags = [], definitions = {}, paths, basePath } = swagger;
   const {
