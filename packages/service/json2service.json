@@ -1,6 +1,6 @@
 {
-  "url": "https://mock.corp/api/open/plugin/export-full?type=json&pid=442&status=all&token=2bebb6699f123fd9f7f8",
-
+  "url": "./swagger.json",
+  "remoteUrl": "https://mock.corp/api/open/plugin/export-full?type=json&pid=442&status=all&token=2bebb6699f123fd9f7f8",
   "requestConfig": {
     "url": "",
     "headers": {}
@@ -12,5 +12,7 @@
     "-o": "tmp/services"
   },
   "validateResponse": true,
-  "guardConfig": {}
+  "guardConfig": {
+    "mode": "strict"
+  }
 }

@@ -25,7 +25,8 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     methodUrl2OperationIdMap: savedMethodUrl2OperationIdMap = {},
     mode,
     prefixReg = defaultPrefixReg,
-    badParamsReg = defaultBadParamsReg
+    badParamsReg = defaultBadParamsReg,
+    methodPrefix = 'Using'
   } = config;
   const { paths } = swagger;
   /**
@@ -81,7 +82,7 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
               .replace(prefixReg, '')
               .replace(/(^\/|})/g, '')
               .replace(/[/{_-]{1,}([^/])/g, (mat, u: string) => u.toUpperCase()) +
-            'Using' +
+            methodPrefix +
             method[0].toUpperCase() +
             method.substring(1);
           // IMP: 严格模式 & 新项目，不再无谓校验 operationId 是否存在风险，直接使用 privateOperationId

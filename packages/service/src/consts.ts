@@ -92,6 +92,8 @@ export interface String2StringMap {
 export interface GuardConfig {
   /** OperationId到url映射 */
   methodUrl2OperationIdMap?: String2StringMap;
+  /** 生成唯一 operationId 时， method 前边的前置，默认是 Using，例如: 'Using' + 'Get' */
+  methodPrefix?: string;
   /** 模式: safe strict */
   mode?: SwaggerGuardMode;
   /** 采用url生成方法名时，需要移除的前缀正则，默认值：/^(\/)?api\//g */
