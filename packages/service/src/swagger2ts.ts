@@ -14,6 +14,7 @@ const asyncExec = (cmd: string) =>
     err => ({ code: 1, message: err.message })
   );
 
+/** 调用 jar，swagger => ts */
 export default async function swagger2ts(
   swaggerParser: SwaggerParser,
   clear = false

@@ -3,7 +3,7 @@
  * @author: yangqianjun
  * @Date: 2019-12-31 13:48:32
  * @LastEditors: yangqianjun
- * @LastEditTime: 2020-01-03 15:02:33
+ * @LastEditTime: 2020-02-06 11:57:31
  */
 
 // @IMP: f*ck
@@ -34,6 +34,7 @@ export function diffAndPatch(curVersion: {}, newVersion: {}) {
           if (!(key in initialMap)) {
             const curValue = lodash.get(curVersion, curKeys);
             const newValue = lodash.get(newVersion, curKeys);
+            // IMP: 数组的特定协议： _t, a
             if (
               (curValue && newValue && Array.isArray(curValue) && Array.isArray(newValue)) ||
               (curValue && !newValue && Array.isArray(curValue)) ||

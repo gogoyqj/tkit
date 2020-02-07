@@ -1,6 +1,6 @@
 {
   "name": "tkit-async",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -28,7 +28,7 @@
   "dependencies": {
     "tkit-ajax": "file:../ajax",
     "tkit-event": "file:../event",
-    "tkit-model": "file:../model",
+    "tkit-use-model": "file:../use-model",
     "tkit-types": "file:../types",
     "react": "^16.8.3",
     "tslib": "^1.9.3"

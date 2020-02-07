@@ -44,6 +44,7 @@ export default async function gen(
     }
   }
 
+  // IMP: yapi => swagger
   if (type === 'yapi') {
     const yapiTMP = await serve(remoteSwaggerUrl, config.yapiConfig);
     if ('result' in yapiTMP && yapiTMP.result && !yapiTMP.code) {
@@ -60,9 +61,9 @@ export default async function gen(
       encoding: 'utf8'
     });
   };
-
   const swagger2tsConfig = { ...defaultParseConfig, ...swaggerParser };
   const servicesPath = swagger2tsConfig['-o'] || '';
+  // IMP: 加载新版
   const code: number = await new Promise(rs => {
     const loader = (cb: (err: any, res: { body?: SwaggerJson }) => any) => {
       remoteSwaggerUrl
@@ -102,12 +103,13 @@ export default async function gen(
   if (code) {
     throw code;
   }
-  // @IMP: 删除缓存
+  // 删除缓存
   delete require.cache[require.resolve(localSwaggerUrl)];
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const swaggerData: SwaggerJson = require(localSwaggerUrl);
   const guardConfig = config.guardConfig || {};
-  // @cc: tags 校验
+
+  // IMP: tags 校验
   const warnings = Array<string>();
   {
     const { warnings: w, errors } = await strictModeGuard(swaggerData, guardConfig);
@@ -116,18 +118,21 @@ export default async function gen(
       throw errors.join('\n');
     }
   }
-  // @cc: 风险校验
+
+  // IMP: 风险校验
   const { errors, warnings: w, suggestions } = await operationIdGuard(swaggerData, guardConfig);
   warnings.push(...w);
   if (warnings.length) {
     console.log(chalk.yellow(warnings.join('\n')));
   }
-  // @IMP: 校正后的文件写入临时文件
+
+  // IMP: 校正后的文件写入临时文件
   const swaggerFileName = basePathToFileName(`${swaggerData.basePath || DefaultBasePath}.json`);
   const swaggerPath = path.join(SmTmpDir, swaggerFileName);
   fs.writeFileSync(swaggerPath, JSON.stringify(swaggerData), {
     encoding: 'utf8'
   });
+
   if (errors.length) {
     if (suggestions.length) {
       console.log(chalk.green(JSON.stringify(suggestions, undefined, 2)));
@@ -138,6 +143,7 @@ export default async function gen(
       console.log(chalk.green(JSON.stringify(suggestions, undefined, 2)));
     }
   }
+
   const res = await swagger2ts({ ...swagger2tsConfig, '-i': swaggerPath }, options.clear);
   if (res.code) {
     throw `[ERROR]: gen failed with: ${res.message}`;

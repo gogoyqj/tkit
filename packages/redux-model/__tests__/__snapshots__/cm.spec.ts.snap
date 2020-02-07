@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils/useModel work ok check cmSamples/testCMFail.ts work ok 1`] = `
+Array [
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "Type 'number' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2769,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "No overload matches this call.
+  Overload 1 of 3, '(effect: string | Tction<any> | (<P extends Tction<number>>(payload: P[\\"payload\\"]) => P), args: number): any', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 3, '(effect: <P extends Tction<number>>(payload: P[\\"payload\\"]) => P, payload: number): any', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2345,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "Argument of type '2' is not assignable to parameter of type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "Type '2' is not assignable to type 'string'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2345,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "Argument of type '\\"2\\"' is not assignable to parameter of type 'number'.",
+  },
+  Object {
+    "category": 1,
+    "code": 2322,
+    "fileName": "cmSamples/testCMFail.ts",
+    "messageText": "Type '\\"2\\"' is not assignable to type 'number'.",
+  },
+]
+`;
+
+exports[`utils/useModel work ok check cmSamples/testCMOK.ts work ok 1`] = `Array []`;

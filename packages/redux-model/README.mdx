@@ -1,0 +1,140 @@
+---
+name: redux-model
+menu: 'redux'
+route: /tkit/redux-model
+---
+
+# `npm i tkit-redux-model`
+
+tkit createModel 封装，自原 `tkit-model` 分离出
+
+## 1. API
+
+## - 1.3 createModel
+
+创建全局 redux model
+
+## - 1.0.① CM
+
+自版本 `3.1.2` 起， 创建集成 `immer` & 结合 `tkit-tkit@3.1.0+` 自动实现 `redux store namespace` 隔离的 model
+
+### Example
+
+#### userModel 本体
+
+```ts
+import { Tction, CM } from 'tkit-redux-model';
+
+export const userModelState = {
+  name: ''
+};
+
+export const UserModel = CM({
+  state: userModelState,
+  namespace: 'cmModel',
+  reducers: {
+    /** 写入名字 */
+    doSetName: (state, action: Tction<string>) => {
+      state.name = action.payload;
+    }
+  },
+  effects: {}
+});
+```
+
+#### initialState
+
+```ts
+// tkit-tkit auto-manage
+import { userModelState } from './userModel';
+
+const initialState = {
+  userModel: userModelState
+};
+```
+
+## - 1.3.② createModel Effects
+
+自`3.0.6`版本起，Effects 提供了更友好的控制副作用开始、成功、失败交互效果的协议，结合`async@3.0.4+`运用，可以明显减轻开发负担
+
+所有来自 Effects 的 async 副作用，在 async 内会标记为：
+
+> `channel: 'tkit-model/effect'`
+
+```ts
+{
+  effects: {
+    /** 显示全局的loading效果 */
+    doSomethingWithLoading: [
+      function*({ tPut, tCall }, action: Tction<{ id: string }>): Iterator<{}> {
+        /** 抛出全局错误信息 */
+        throw '操作失败';
+        /** 抛出全局成功信息 */
+        return '操作成功';
+      },
+      {
+        type: 'takeEvery', // it all depends
+        loading: true
+      }
+    ],
+    *doSomethingAsync({ tPut, tCall }, action: Tction<{ id: string }>): Iterator<{}> {
+      /**  抛出全局错误信息 */
+      throw '操作失败';
+    }
+  }
+}
+```
+
+## - 1.3.③ 弹窗 Effects
+
+可弹窗
+
+```ts
+import { doAsync } from 'tkit-async';
+{
+  effects: {
+    /** 弹窗 */
+    *doSometingPopAsync({ tPut, tCall }, action: Tction<{ title: string, formProps }>): Iterator<{}> {
+      const { title, formProps } = action.payload;
+      const res = yield doAsync({
+        fetch: () => {},
+        modalProps: {
+          title
+        },
+        formProps,
+        successMsg: false,
+        errorMsg: false
+      });
+      if (res.code) {
+        throw res.message || '操作失败';
+      }
+      return '操作成功';
+    }
+  }
+}
+```
+
+### Example
+
+```ts
+import createModel, { Tction }  from 'tkit-redux-model';
+import otherModel from './otherModel';
+
+const myModel = createModel({
+  effects: *doSomethingAsync({ namespace, put, tPut }, action: Tction<{ username: string }>) {
+    // 触发其他 model action
+    // way 1, rec
+    yield tPut(otherModel.actions.actionsNameA, { username: '' });
+    // way 2
+    yield put({ type: otherModel.TYPES.actionsNameA, payload: { username: '' } });
+
+    // 出发本 model action
+    // way 1, rec
+    yield tPut(myModel.actions.actionsNameA, { username: '' });
+    // way 2
+    yield put({ type: myModel.TYPES.actionsNameA, payload: { username: '' } });
+    // way 3
+    yield put({ type: `${namespace}/actionsNameA`, payload: { username: '' } });
+  }
+})
+```

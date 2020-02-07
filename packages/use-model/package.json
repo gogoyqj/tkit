@@ -1,0 +1,37 @@
+{
+  "name": "tkit-use-model",
+  "version": "3.2.5",
+  "description": "use model",
+  "keywords": [
+    "use",
+    "model",
+    "hooks"
+  ],
+  "author": "yangqianjun <yangqianjun>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gogoyqj/tkit"
+  },
+  "scripts": {
+    "test": "jest --all --env=jsdom",
+    "build": "tsc --project tsconfig.prod.json"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.3",
+    "react-dom": ">=16.8.3"
+  },
+  "dependencies": {
+    "tkit-actions": "file:../actions",
+    "tkit-model-factory": "file:../model-factory"
+  }
+}

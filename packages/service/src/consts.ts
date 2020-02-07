@@ -5,6 +5,7 @@ import { CoreOptions } from 'request';
 
 export type SMSchema = JSONSchema4 | JSONSchema6;
 
+/** swagger path item 数据结构定义 */
 export interface PathJson {
   description?: string;
   operationId?: string;
@@ -111,17 +112,11 @@ export interface GuardConfig {
 }
 
 export interface YAPIConfig {
-  /**
-   * 相应是否字段是否必须；当直接使用 yapi json 定义返回数据格式的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的
-   * */
+  /** 相应是否字段是否必须；当直接使用 yapi json 定义返回数据格式的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的 */
   required?: boolean;
-  /**
-   * postJSON字段是否必须；当直接使用 yapi json 定义 json 格式 body 参数的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的
-   */
+  /** postJSON字段是否必须；当直接使用 yapi json 定义 json 格式 body 参数的时候，生成的 typescript 文件，默认情况下，所有字段都是可选的，配置成 true，则所有字段都是不可缺省的 */
   bodyJsonRequired?: boolean;
-  /**
-   * 分类名中文=>英文映射；yapi 项目接口分类中英文映射，如 `{ "公共分类": "Common" }`
-   */
+  /** 分类名中文=>英文映射；yapi 项目接口分类中英文映射，如 `{ "公共分类": "Common" }` */
   categoryMap?: String2StringMap | ((cate: string) => string);
 }
 
@@ -160,4 +155,5 @@ export interface SwaggerParser {
 /** 项目目录 */
 export const ProjectDir = process.cwd();
 export const RemoteUrlReg = /^http/;
+/** 放置依赖 web 静态文件目录 */
 export const StaticDir = path.join(__dirname, '..', 'static');

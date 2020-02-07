@@ -3,10 +3,10 @@
  * @author: yangqianjun
  * @Date: 2019-07-20 15:12:00
  * @LastEditors: yangqianjun
- * @LastEditTime: 2019-12-20 09:43:44
+ * @LastEditTime: 2020-02-07 16:35:02
  */
-import createModel from './createModel';
 
-export * from './useModel';
-export * from './cm';
-export default createModel;
+export * from 'tkit-model-factory';
+export { M, MM, useModel } from 'tkit-use-model';
+export { CM } from 'tkit-redux-model';
+export { default } from 'tkit-redux-model';

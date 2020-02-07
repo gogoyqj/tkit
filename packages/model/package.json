@@ -1,6 +1,6 @@
 {
   "name": "tkit-model",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "> TODO: description",
   "author": "yangqianjun <751558483@qq.com>",
   "homepage": "",
@@ -18,8 +18,8 @@
     "url": "https://github.com/gogoyqj/tkit"
   },
   "scripts": {
-    "test": "jest --all --env=jsdom",
-    "build": "rm -r ./lib;tsc --project tsconfig.prod.json"
+    "test": "jest --all",
+    "build": "tsc --project tsconfig.prod.json"
   },
   "peerDependencies": {
     "tkit-tkit": ">=3.1.0",
@@ -27,12 +27,9 @@
     "react-dom": ">=16.8.3"
   },
   "dependencies": {
-    "tkit-actions": "file:../actions",
-    "tkit-async": "file:../async",
-    "tkit-event": "file:../event",
-    "redux-actions": "^2.6.4",
-    "redux-saga": "^0.16.2",
-    "tslib": "^1.9.3"
+    "tkit-model-factory": "file:../model-factory",
+    "tkit-redux-model": "file:../redux-model",
+    "tkit-use-model": "file:../use-model"
   },
   "devDependencies": {
     "tkit-types": "file:../types",

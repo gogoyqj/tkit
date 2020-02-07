@@ -3,11 +3,11 @@
  * @file: 异步操作模型
  * @Date: 2019-11-19 16:14:12
  * @LastEditors: yangqianjun
- * @LastEditTime: 2019-12-23 19:23:22
+ * @LastEditTime: 2020-02-07 15:55:19
  */
 
 /* eslint-disable @typescript-eslint/no-angle-bracket-type-assertion */
-import { M, Tction, CustomEffects } from 'tkit-model';
+import { M, Tction, IAsyncConfirmedMsg, BaseEffectsUtils } from 'tkit-use-model';
 import { TkitAjaxFunction, AjaxCancelCode } from 'tkit-ajax';
 import { TkitUtils } from 'tkit-types';
 import { EventCenter } from 'tkit-event';
@@ -60,7 +60,7 @@ export type EnsureSingleArgumentsType<F extends TkitAjaxFunction> = TkitUtils.Ge
 
 /** 获取第一个参数类型 */
 
-export interface NewAsyncParams<F extends TkitAjaxFunction> {
+export interface NewAsyncParams<F extends TkitAjaxFunction> extends IAsyncConfirmedMsg {
   /** F 仅接收一个参数适用 */
   params?: EnsureSingleArgumentsType<F>;
   /** 回调 */
@@ -295,7 +295,7 @@ const model = M({
   effects: {
     doAsync: [
       async function<F extends TkitAjaxFunction>(
-        { tPut }: CustomEffects,
+        { tPut }: BaseEffectsUtils,
         action: Tction<Omit<IAsyncActionProps<F>, 'ASYNC_ID'>>
       ) {
         const { modalProps } = action.payload;
@@ -322,7 +322,7 @@ const model = M({
     ],
     doAsyncConfirmed: [
       async <F extends TkitAjaxFunction>(
-        { tPut }: CustomEffects,
+        { tPut }: BaseEffectsUtils,
         action: Tction<IAsyncConfirmedParams<F>>
       ) => {
         const payload = confirmedPayloadCreator(action.payload);
@@ -388,7 +388,7 @@ const model = M({
       }
     ],
     doAsyncCancel: [
-      async ({ tPut }: CustomEffects, action: Tction<number>) => {
+      async ({ tPut }: BaseEffectsUtils, action: Tction<number>) => {
         await tPut(model.actions.doAsyncEnd, {
           ASYNC_ID: action.payload,
           successMsg: false

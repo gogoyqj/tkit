@@ -1,0 +1,95 @@
+---
+name: use-model
+menu: 'redux'
+route: /tkit/use-model
+---
+
+# `npm i tkit-use-model`
+
+tkit useModel 封装，自原 `tkit-model` 分离出
+
+## 1. API
+
+## - 1.1 M
+
+创建供 `useModel` 使用的局部 model
+
+### Example
+
+```ts
+import { Tction, M } from 'tkit-use-model';
+
+export const UserModel = M({
+  namespace: 'test',
+  state: {
+    username: ''
+  },
+  reducers: {
+    doRename: (state, action: Tction<{ username: string }>): typeof state => {
+      return {
+        ...state,
+        username: action.payload.username
+      };
+    }
+  },
+  effects: {
+    doFetchName: async ({ tPut }, action: Tction<{ time: number }>): Promise<{}> => {
+      const username = await new Promise(rs => rs(`me${action.payload.time}`));
+      return tPut(UserModel.actions.doRename, { username });
+    }
+  }
+});
+```
+
+## - 1.1.① MM
+
+自版本 `3.1.2` 起支持， 创建供 `useModel` 使用的集成 `immer` 局部 model
+
+### Example
+
+```ts
+import { Tction, MM } from 'tkit-use-model';
+
+export const UserModel = MM({
+  namespace: 'test',
+  state: {
+    username: ''
+  },
+  reducers: {
+    doRename: (state, action: Tction<{ username: string }>) => {
+      state.username = action.payload.username;
+    }
+  },
+  effects: {
+    doFetchName: async ({ tPut }, action: Tction<{ time: number }>): Promise<{}> => {
+      const username = await new Promise(rs => rs(`me${action.payload.time}`));
+      return tPut(UserModel.actions.doRename, { username });
+    }
+  }
+});
+```
+
+## - 1.2 useModel
+
+useModel hooks
+
+### Example
+
+```tsx
+import { useModel, bindDispatchToAction } from 'tkit-use-model';
+
+const MySFCComponent = props => {
+  const [store, actions] = useModel(UserModel, props.data);
+  return (
+    <button onClick={() => actions.doFetchName({ time: 2 })}>{store.userModel.username}</button>
+  );
+};
+```
+
+### ⚠️ tips
+
+自 @3.0.3 起，默认关闭了 `useModel` 开发阶段运行日志，如需要打印日志，请配置:
+
+```ts
+window.__TKIT_USE_MODEL_LOGGER__ = console.log;
+```

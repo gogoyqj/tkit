@@ -3,7 +3,7 @@
  * @file: ajax封装
  * @Date: 2019-11-21 15:25:51
  * @LastEditors: yangqianjun
- * @LastEditTime: 2019-12-27 13:34:24
+ * @LastEditTime: 2020-02-07 20:38:12
  */
 import qs from 'qs';
 import axios from 'axios';
@@ -65,8 +65,9 @@ export class WrappedFetch {
       config = {
         ...config,
         headers: {
-          ...config.headers,
-          'Content-Type': 'application/json'
+          // 可覆盖
+          'Content-Type': 'application/json',
+          ...config.headers
         },
         data
       };
@@ -76,8 +77,9 @@ export class WrappedFetch {
       config = {
         ...config,
         headers: {
-          ...config.headers,
-          'Content-Type': 'application/x-www-form-urlencoded'
+          // 可覆盖
+          'Content-Type': 'application/x-www-form-urlencoded',
+          ...config.headers
         },
         data: qs.stringify(form)
       };

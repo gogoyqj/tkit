@@ -3,11 +3,13 @@
  * @file: async常量
  * @Date: 2019-09-11 11:02:36
  * @LastEditors: yangqianjun
- * @LastEditTime: 2019-12-06 18:37:18
+ * @LastEditTime: 2020-02-07 15:44:31
  */
+
+import { ASYNC_EFFECT_EVENT_NAME as AEE } from 'tkit-model-factory';
 import { AsyncModelType } from './asyncModel';
 
-export const ASYNC_EFFECT_EVENT_NAME = 'ASYNC_EFFECT_EVENT_NAME';
+export const ASYNC_EFFECT_EVENT_NAME = AEE;
 export interface AsyncEffectEventType {
   type: keyof AsyncModelType['actions'];
   payload: any;

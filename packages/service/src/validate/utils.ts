@@ -12,7 +12,7 @@ export const pathToReg = (path: string) => {
 };
 
 export const getPathParamsNames = (path: string) => {
-  let params: string[] = [];
+  const params: string[] = [];
   path.replace(/{([^}]+)}/g, (all, param) => {
     params.push(param);
     return all;

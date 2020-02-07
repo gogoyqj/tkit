@@ -1,5 +1,5 @@
 import { asyncModel, IAsyncState } from 'src/asyncModel';
-import { CustomEffects } from 'tkit-model';
+import { BaseEffectsUtils } from 'tkit-use-model';
 
 const {
   __model: {
@@ -109,7 +109,7 @@ describe('tkit-async/asyncModel works ok', () => {
         }
         payloads.push(payload);
       });
-      const eff: CustomEffects = { tPut } as any;
+      const eff: BaseEffectsUtils = { tPut } as any;
       await doAsync(eff, {
         payload: {
           fetch: loadData

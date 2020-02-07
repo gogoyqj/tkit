@@ -17,9 +17,7 @@ export const defaultBadParamsReg: Required<GuardConfig>['badParamsReg'] = /[^a-z
 export interface HttpMethodUrl2APIMap {
   [url: string]: API;
 }
-/**
- * 构建 http method + url : oldOperationId 安全映射，用以校正风险 swagger
- */
+/** 构建 http method + url : oldOperationId 安全映射，用以校正风险 swagger */
 export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {}) {
   const {
     methodUrl2OperationIdMap: savedMethodUrl2OperationIdMap = {},
@@ -29,38 +27,24 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     methodPrefix = 'Using'
   } = config;
   const { paths } = swagger;
-  /**
-   * http method + url => api info 映射
-   */
+  /**  http method + url => api info 映射 */
   const methodUrl2ApiMap: HttpMethodUrl2APIMap = {};
-  /**
-   * `XXXX_*` => `XXXX` 对 api 条目分组
-   */
+  /** XXXX_*` => `XXXX` 对 api 条目分组 */
   const operationId2ApiMap: { [id: string]: API[] } = {};
-  /**
-   * 已持久化 `method` + `url` => operationId 映射
-   */
+  /** 已持久化 `method` + `url` => operationId 映射 */
   const copySavedMethodUrl2OperationIdMap = { ...savedMethodUrl2OperationIdMap };
   const isRelationMapped = !!Object.keys(copySavedMethodUrl2OperationIdMap).length;
 
-  /**
-   * 错误日志：例如参数错误、危险operationId
-   */
+  /** 错误日志：例如参数错误、危险operationId */
   const errors: string[] = [];
-  /**
-   * 警告日志：根据锁定关系自动校正日志
-   */
+  /** 警告日志：根据锁定关系自动校正日志 */
   const warnings: string[] = [];
-  /**
-   * 自动推断出来的锁定映射关系
-   */
+  /** 自动推断出来的锁定映射关系 */
   const suggestions: String2StringMap = {};
   const isSafe = mode === 'safe';
   const isStrict = mode === 'strict';
 
-  /**
-   * 风险 operationId 数组
-   */
+  /** 风险 operationId 数组 */
   const dangers = Object.keys(
     Object.keys(paths).reduce<{ [id: string]: string }>((dangerousOperationIdMap, url) => {
       const apiItem = paths[url];
@@ -118,9 +102,7 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     };
   }
 
-  /**
-   * 校验 or 修复 api operationId 风险
-   */
+  /** 校验 or 修复 api operationId 风险 */
   const validateOrFixOperationId = (api: API, errors: string[]) => {
     const { operationId = '', privateMethodUrl = '', privateOperationId } = api;
     const savedOperationId = copySavedMethodUrl2OperationIdMap[privateMethodUrl];
@@ -154,14 +136,14 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     delete copySavedMethodUrl2OperationIdMap[privateMethodUrl];
   };
 
-  // 对危险分组进行校验或修复
+  // IMP: 对危险分组进行校验或修复
   dangers.reduce((errors, dangerousOperationId) => {
     const group = operationId2ApiMap[dangerousOperationId];
     group.forEach(api => validateOrFixOperationId(api, errors));
     return errors;
   }, errors);
 
-  // 对剩余映射进行清理、映射对应的 api 进行校验或修复
+  // IMP: 对剩余映射进行清理、映射对应的 api 进行校验或修复
   Object.keys(copySavedMethodUrl2OperationIdMap).reduce((errors, methodUrl) => {
     const mappedPperationId = copySavedMethodUrl2OperationIdMap[methodUrl];
     const api = methodUrl2ApiMap[methodUrl];
@@ -180,7 +162,7 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
     return errors;
   }, errors);
 
-  // 仅安全模式生成替换提示
+  // IMP: 仅安全模式生成替换提示
   if (!errors.length && !Object.keys(suggestions).length && isSafe) {
     try {
       Object.keys(paths).forEach(url => {
@@ -209,6 +191,7 @@ export function operationIdGuard(swagger: SwaggerJson, config: GuardConfig = {})
         suggestions: []
       };
     }
+
     return {
       errors,
       warnings,
@@ -253,9 +236,7 @@ export const DefaultValidDefinitionReg: Required<
 >['validDefinitionReg'] = /^[a-z-0-9_$«»,]+$/gi;
 export const DefaultValidUrlReg: Required<GuardConfig>['validUrlReg'] = /api/g;
 
-/**
- * 严格模式特有校验逻辑
- */
+/** 严格模式特有校验逻辑 */
 export function strictModeGuard(swagger: SwaggerJson, config: GuardConfig) {
   const { tags = [], definitions = {}, paths, basePath } = swagger;
   const {
