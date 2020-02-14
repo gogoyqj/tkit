@@ -1,11 +1,11 @@
-import { SwaggerJson, GuardConfig, String2StringMap } from './consts';
-
 /**
  * @description 对 swagger 返回做安全检测
  * 前提:
  *  - http method + url 唯一
  *  - 后端变更 http method、url 必须周知前端
  */
+
+import { SwaggerJson, GuardConfig, String2StringMap } from './consts';
 
 type API = SwaggerJson['paths']['a']['get'];
 

@@ -3,7 +3,7 @@
  * @author: yangqianjun
  * @Date: 2020-02-06 16:39:25
  * @LastEditors: yangqianjun
- * @LastEditTime: 2020-02-07 18:29:31
+ * @LastEditTime: 2020-02-10 09:29:35
  */
 
 import { AbstractAction } from '../action';
@@ -53,7 +53,7 @@ export interface EffectOptions {
   ms?: number;
   /** 是否要求显示全局loading效果 */
   loading?: boolean;
-  /** 是否局部副作用 */
+  /** 是否局部副作用，Hooks Model */
   local?: boolean;
   /** 屏蔽交互效果，设置为true，则不会广播事件 */
   silent?: boolean;

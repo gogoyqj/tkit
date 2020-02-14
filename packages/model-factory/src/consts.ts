@@ -1,12 +1,12 @@
-import { EffectOptions } from './types';
-
 /**
- * @file: 常量
+ * @file: model 常量
  * @author: yangqianjun
- * @Date: 2020-02-06 16:27:23
+ * @Date: 2020-02-06 14:42:35
  * @LastEditors: yangqianjun
- * @LastEditTime: 2020-02-06 17:30:29
+ * @LastEditTime: 2020-02-10 10:06:56
  */
+
+import { EffectOptions } from './types';
 
 /** 默认副作用配置 */
 export const defaultEffectOptions: EffectOptions = {
@@ -21,14 +21,6 @@ export const enum ModernType {
   /** useModel */
   HookModern = 1
 }
-
-/**
- * @file: model 常量
- * @author: yangqianjun
- * @Date: 2020-02-06 14:42:35
- * @LastEditors: yangqianjun
- * @LastEditTime: 2020-02-06 14:52:14
- */
 
 /**
  * 执行 effect 广播的事件

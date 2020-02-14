@@ -1,9 +1,3 @@
-import { produce } from 'immer';
-import { createAction, handleActions } from 'tkit-actions';
-import { TkitUtils } from 'tkit-types';
-import { AbstractAction, Effects, Reducers, IEffectFactory, BaseEffectsUtils } from './types';
-import { ModernType, defaultEffectOptions } from './consts';
-
 /**
  * Model工厂
  * @param model
@@ -12,6 +6,13 @@ import { ModernType, defaultEffectOptions } from './consts';
  * @param model.reducers 推导reducers和同步actions
  * @param model.effects 副作用，推导异步actions
  */
+
+import { produce } from 'immer';
+import { createAction, handleActions } from 'tkit-actions';
+import { TkitUtils } from 'tkit-types';
+import { AbstractAction, Effects, Reducers, IEffectFactory, BaseEffectsUtils } from './types';
+import { ModernType, defaultEffectOptions } from './consts';
+
 export default function factory<
   M,
   R extends Reducers<M>,
@@ -31,9 +32,15 @@ export default function factory<
 }) {
   type ReducerName = keyof R;
   type EffectName = keyof E;
+
+  /**
+   * ====================== Model Actions 类型计算 ======================
+   */
+
   // IMP: 修复当 model effects 缺省的情况下，推断 TYPES 字符串类型错误的bug
   type ActionTypes = { [doSomething in ReducerName]: string } &
     { [doSomething in EffectName]: string };
+
   // IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
   type SyncActions = {
     [doSomething in ReducerName]: TkitUtils.GetArgumentsType<R[doSomething]>[1] extends
@@ -42,6 +49,7 @@ export default function factory<
       ? () => any
       : <P extends TkitUtils.GetArgumentsType<R[doSomething]>[1]>(payload: P['payload']) => P;
   };
+
   // IMP: 修复当 model effects 缺省的情况下，类型推断错误的bug
   // model 的 reducers、effects 不能是泛型
   type AsyncActions = {
@@ -53,7 +61,13 @@ export default function factory<
           payload: P['payload']
         ) => P;
   };
+
   type Actions = SyncActions & AsyncActions;
+
+  /**
+   * ====================== Model Actions 逻辑实现 ======================
+   */
+
   const { namespace, state, reducers, effects, m: modern, effectFactory } = model;
   const reducersMap: any = {};
   const TYPES: any = {};
@@ -82,6 +96,8 @@ export default function factory<
       createAction(type, payload)) as Actions[typeof doSomething];
     return actions;
   }, {} as Actions);
+
+  // TODO: Hooks Model 其实可以不执行下边的逻辑，在 useModel 会再重新覆盖一遍 actions[effectName]
   if (effects) {
     actions = Object.keys(effects).reduce((actions, doSomethingAsync: EffectName) => {
       type Action = typeof effects[typeof doSomethingAsync];
@@ -103,6 +119,7 @@ export default function factory<
       return actions;
     }, actions);
   }
+
   return {
     state,
     actions,

@@ -15,7 +15,9 @@ export const tCall = <E extends (...args: any[]) => any>(
 
 const localOpts = { local: true };
 
-// 层级嵌套的类型推断不好使
+/**
+ * 类似 Redux 的 bindActionToDispatch
+ */
 export function bindDispatchToAction<A, E, M extends { actions: A; effects: E; TYPES: any }>(
   actions: A,
   dispatch: ReturnType<typeof useReducer>[1],
@@ -30,7 +32,9 @@ export function bindDispatchToAction<A, E, M extends { actions: A; effects: E; T
           })
       : dispatch;
   const wrappedPut = putWrapper(put);
-  const effects = { tPut: wrappedPut, tCall, namespace: model['namespace'] };
+  const effectsUtils = { tPut: wrappedPut, tCall, namespace: model['namespace'] };
+
+  // IMP: 不同于全局 store，需要关联 dispatch
   return Object.keys(actions).reduce((newActions, actionName) => {
     const originAction = actions[actionName];
     const originEffect = modelEffects[actionName];
@@ -40,11 +44,12 @@ export function bindDispatchToAction<A, E, M extends { actions: A; effects: E; T
     const effect = originEffect
       ? effectWrapper(
           Array.isArray(originEffect) ? originEffect[0] : originEffect,
-          effects,
+          effectsUtils,
           model.TYPES[actionName],
           opts
         )
       : undefined;
+
     newActions[actionName] = (...args: any) => {
       const action = originAction(...args);
       dispatch(action);
@@ -54,6 +59,9 @@ export function bindDispatchToAction<A, E, M extends { actions: A; effects: E; T
   }, {}) as typeof actions;
 }
 
+/**
+ * 注入调试工具
+ */
 const commonReducer: (reducer: <M>(prevState: M, action: Tction<any>) => M) => any =
   process.env.NODE_ENV === 'development'
     ? reducer =>
@@ -75,6 +83,9 @@ const commonReducer: (reducer: <M>(prevState: M, action: Tction<any>) => M) => a
         )
     : reducer => reducer;
 
+/**
+ * Hooks Model
+ */
 export const useModel = <
   M extends {
     reducers: any;
@@ -89,6 +100,7 @@ export const useModel = <
   initialState: M['state'] = model['state']
 ) => {
   const [store, dispatch] = useReducer(commonReducer(model.reducers), initialState);
+
   const isNotUnmounted = useRef(true);
   // @IMP: 解除 dispatch 响应，避免内存泄露
   useEffect(() => {
@@ -96,6 +108,7 @@ export const useModel = <
       isNotUnmounted.current = false;
     };
   }, []);
+
   return [
     store,
     useMemo(

@@ -144,9 +144,9 @@ export interface Json2Service {
 export interface SwaggerParser {
   /** 输出 typescript 代码目录，默认是当前 src/services */
   '-o'?: string;
-  /** yapi 或者 swagger， 标记类型，默认是 swagger */
+  /** 模板目录，默认是 plugins/typescript-tkit，避免修改；配置成 plugins/types-only 仅输出类型 */
   '-t'?: string;
-  /** 模板目录，默认是 typescript-angularjs，避免修改   */
+  /** language，默认是 typescript-angularjs，避免修改  */
   '-l'?: string;
   /** 输入文件 */
   '-i': string;
