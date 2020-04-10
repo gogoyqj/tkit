@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import * as path from 'path';
 import { JSONSchema4, JSONSchema6 } from 'json-schema';
 import { CoreOptions } from 'request';
+import { YApiCategory } from './yapi/yapiJSon2swagger';
 
 export type SMSchema = JSONSchema4 | JSONSchema6;
 
@@ -118,6 +119,10 @@ export interface YAPIConfig {
   bodyJsonRequired?: boolean;
   /** 分类名中文=>英文映射；yapi 项目接口分类中英文映射，如 `{ "公共分类": "Common" }` */
   categoryMap?: String2StringMap | ((cate: string) => string);
+  /** yapi json 转换成 swagger json 的钩子 */
+  beforeTransform?: (yapiJSON: YApiCategory[]) => YApiCategory[];
+  /** yapi json 转换成 swagger json 后的钩子 */
+  afterTransform?: (swaggerJSON: SwaggerJson) => SwaggerJson;
 }
 
 /** CLI配置 */

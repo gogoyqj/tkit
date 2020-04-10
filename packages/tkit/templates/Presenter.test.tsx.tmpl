@@ -1,6 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+<% if (connect) { %>
 import { <%= presenterName %> } from 'src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
+<% } else {%>
+import <%= presenterName %> from 'src/features/<%= feature %><%= components ? '/' + components : '' %>/<%= fileName %>';
+<% } %>
 
 describe('<%= feature %>/<%= fileName %>', () => {
   it('renders node with correct class name', () => {<% if (connect || url) {%>

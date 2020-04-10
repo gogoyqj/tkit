@@ -5,7 +5,7 @@ import { JSONSchema6 } from 'json-schema';
 import * as JSON5 from 'json5';
 import { PathJson, SwaggerJson, Json2Service } from '../consts';
 
-interface API {
+export interface YApiCategory {
   name: string;
   desc: string;
   add_time: number;
@@ -14,10 +14,10 @@ interface API {
   proBasepath?: string;
   proName?: string;
   proDescription?: string;
-  list: List[];
+  list: YApiItem[];
 }
 
-interface List {
+export interface YApiItem {
   tag: any[];
   method: string;
   title: string;
@@ -44,17 +44,20 @@ interface List {
   status: string;
 }
 
-interface QueryPath {
+export interface QueryPath {
   path: string;
   params: any[];
 }
 
-interface STag {
+export interface STag {
   name?: string;
   description?: string;
 }
 
-export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['yapiConfig'] = {}) {
+export default function yapiJSon2swagger(
+  yapiList: YApiCategory[],
+  yapiConfig: Json2Service['yapiConfig'] = {}
+) {
   let basePath = '';
   const info = {
     title: 'unknown',
@@ -62,7 +65,14 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
     description: 'unknown'
   };
   const tags: STag[] = [];
-  const { categoryMap = <T>(s: T) => s, bodyJsonRequired, required } = yapiConfig;
+  const {
+    categoryMap = <T>(s: T) => s,
+    bodyJsonRequired,
+    required,
+    beforeTransform,
+    afterTransform
+  } = yapiConfig;
+  const list = beforeTransform ? beforeTransform(yapiList) : yapiList;
   list.forEach(t => {
     if (t.proBasepath) {
       basePath = t.proBasepath;
@@ -295,7 +305,7 @@ export default function yapiJSon2swagger(list: API[], yapiConfig: Json2Service['
       return apisObj;
     })()
   };
-  return swaggerObj;
+  return afterTransform ? afterTransform(swaggerObj) : swaggerObj;
 }
 
 export type SwaggerLikeJson = ReturnType<typeof yapiJSon2swagger>;

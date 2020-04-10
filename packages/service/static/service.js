@@ -63,6 +63,7 @@
     let key = node.getAttribute('data-key');
     const keys = [];
     if (key) {
+      // IMP: 数组的 key 需要特殊处理，符合 json diff 协议
       if (
         node.className.indexOf('jsondiffpatch-deleted') !== -1 &&
         par.className.indexOf('jsondiffpatch-node-type-array') !== -1
