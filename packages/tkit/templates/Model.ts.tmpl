@@ -1,5 +1,5 @@
 <% if (local) { %>
-import { Tction, ${modern ? 'MM' : 'M'} } from 'tkit-model';
+import { Tction, ${modern ? 'MM' : 'M'} } from '@tkit/model';
 import { api } from '@services';
 
 const Model = ${modern ? 'MM' : 'M'}({
@@ -34,8 +34,8 @@ export default Model;
 
 <% } else {%>
 <% if (modern) { %>
-import { CM, Tction } from 'tkit-model';
-import { TkitUtils as Utils } from 'tkit-types';
+import { CM, Tction } from '@tkit/model';
+import { TkitUtils as Utils } from '@tkit/types';
 import { api } from '@services';
 
 export interface State {
@@ -62,8 +62,8 @@ const model = CM({
   }
 });
 <% } else { %>
-import createModel, { Tction } from 'tkit-model';
-import { TkitUtils as Utils } from 'tkit-types';
+import createModel, { Tction } from '@tkit/model';
+import { TkitUtils as Utils } from '@tkit/types';
 import { api } from '@services';
 
 export interface State {

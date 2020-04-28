@@ -1,4 +1,4 @@
-import { Action } from 'tkit-actions';
+import { Action } from '@tkit/actions';
 
 import initialState, { IInitialState } from './initialState';
 

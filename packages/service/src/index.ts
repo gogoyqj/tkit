@@ -24,7 +24,14 @@ export default async function gen(
     clear?: boolean;
   }
 ): Promise<number> {
-  const { url, remoteUrl, type = 'swagger', swaggerParser, requestConfig = {} } = config;
+  const {
+    url,
+    remoteUrl,
+    type = 'swagger',
+    swaggerParser,
+    requestConfig = {},
+    swaggerConfig = {}
+  } = config;
   if (!url || url.match(RemoteUrlReg)) {
     console.log(chalk.red(`[ERROR]: 自 @3.1.* url 必须是本地地址`));
     throw 1;
@@ -87,6 +94,22 @@ export default async function gen(
           fs.mkdirSync(servicesPath);
         }
         if (newSwagger) {
+          // 支持过滤掉某些特定的规则
+          const { exclude, include, modifier } = swaggerConfig;
+          if (Array.isArray(exclude) || Array.isArray(include)) {
+            const { paths } = newSwagger;
+            newSwagger.paths = Object.keys(paths).reduce<typeof paths>((newPaths, url) => {
+              const included = include?.find(reg => url.match(reg));
+              const excluded = exclude?.find(reg => url.match(reg));
+              if (included || !excluded) {
+                newPaths[url] = paths[url];
+              }
+              return newPaths;
+            }, {});
+          }
+          if (modifier) {
+            newSwagger = modifier(newSwagger, config);
+          }
           if (fs.existsSync(localSwaggerUrl)) {
             // diff and patch
             const localSwagger: SwaggerJson = require(localSwaggerUrl);

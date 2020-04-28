@@ -1,5 +1,5 @@
 import React<% if (hooks) { %>, { useState, useEffect }<%} %> from 'react';<% if (connect) { %>
-import { bindActionCreators, Dispatch } from 'tkit-actions';
+import { bindActionCreators, Dispatch } from '@tkit/actions';
 import { connect } from 'react-redux';<% } %><% if (url) {%>
 import { RouteComponentProps } from 'react-router-dom';
 <%} %>
@@ -14,7 +14,7 @@ type StateProps  = ReturnType<typeof mapStateToProps>;
 type DispatchProps  = ReturnType<typeof mapDispatchToProps>;
 <% } %>
 <% if (event) { %>
-import EventWrapper, { IEventWrapperProps } from 'tkit-event';
+import EventWrapper, { IEventWrapperProps } from '@tkit/event';
 <% } %>
 
 export interface I<%= presenterName %>Props {}

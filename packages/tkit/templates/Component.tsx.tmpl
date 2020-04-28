@@ -1,5 +1,5 @@
 import React from 'react';<% if (connect) { %>
-import { bindActionCreators, Dispatch } from 'tkit-actions';
+import { bindActionCreators, Dispatch } from '@tkit/actions';
 import { connect } from 'react-redux';<% } %><% if (url) {%>
 import { RouteComponentProps } from 'react-router-dom';
 <%} %>
@@ -12,7 +12,7 @@ import actions from '<%= components || wrap ? '' : './' %><%= components ? '../'
 import './<%= fileName %>.less';
 
 <% if (event) { %>
-import EventWrapper, { IEventWrapperProps } from 'tkit-event';
+import EventWrapper, { IEventWrapperProps } from '@tkit/event';
 <% } %>
 
 // own props

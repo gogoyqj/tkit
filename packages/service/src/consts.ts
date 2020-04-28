@@ -137,6 +137,15 @@ export interface Json2Service {
   yapiConfig?: YAPIConfig;
   /** Swagger生成TS代码相关配置 */
   swaggerParser?: SwaggerParser;
+  /** Swagger 配置 */
+  swaggerConfig?: {
+    /** 排除指定的 path，当 exclude 和 include 冲突时，include 生效 */
+    exclude?: RegExp[];
+    /** 仅包含指定的 path，当 exclude 和 include 冲突时，include 生效 */
+    include?: RegExp[];
+    /** 变更swagger */
+    modifier?: <S extends SwaggerJson>(swagger: S, config: Json2Service) => S;
+  };
   /** 生成自动校验逻辑 */
   validateResponse?: boolean;
   /** 方法名安全相关设置 */
